@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Email Newsletter Builder
 
-## Getting Started
+![Email Newsletter Builder Banner](https://placehold.co/1200x400/2563eb/ffffff?text=Email+Newsletter+Builder)
 
-First, run the development server:
+A professional, drag-and-drop email newsletter builder for React and Next.js applications. Built with Tailwind CSS, Redux Toolkit, and React DnD.
+
+[![NPM Version](https://img.shields.io/npm/v/email-newsletter-builder)](https://www.npmjs.com/package/email-newsletter-builder)
+[![License](https://img.shields.io/npm/l/email-newsletter-builder)](https://github.com/sunsoftny/email-newsletter-builder/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/github/stars/sunsoftny/email-newsletter-builder?style=social)](https://github.com/sunsoftny/email-newsletter-builder)
+
+## Features
+
+- 🎨 **Drag & Drop Interface**: Intuitive WYSIWYG editor.
+- 📱 **Responsive Output**: Generates HTML optimized for email clients.
+- 🧩 **Modular Components**: Text, Image, Button, Divider, Spacer, and Social blocks.
+- 💅 **Professional UI**: Built with a clean, modern aesthetic using Tailwind CSS.
+- 💾 **State Managment**: Powered by Redux Toolkit for robust undo/redo and persistence.
+- 🔌 **Backend Agnostic**: Easily integrate with any backend (Node, PHP, Python, etc.).
+
+## Installation
+
+Install the package via npm:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install email-newsletter-builder
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You also need peer dependencies if not already installed:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install react react-dom @reduxjs/toolkit react-redux react-dnd react-dnd-html5-backend lucide-react tailwind-merge clsx
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Quick Start
 
-## Learn More
+### 1. Import Styles
+Import the CSS globally in your application (e.g., in `_app.tsx`, `layout.tsx`, or `main.tsx`).
 
-To learn more about Next.js, take a look at the following resources:
+```tsx
+import 'email-newsletter-builder/dist/index.css';
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Render the Editor
+Use the `EmailEditor` component in your page.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```tsx
+import { EmailEditor } from 'email-newsletter-builder';
 
-## Deploy on Vercel
+export default function Page() {
+  return (
+    <div style={{ height: '100vh', width: '100vw' }}>
+      <EmailEditor />
+    </div>
+  );
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Integrating with a Backend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The editor is designed to be purely frontend. To save templates, you need to connect it to your API.
+
+### Customizing Data Persistence
+
+The editor operates on a JSON state. You can extract this state to save it, and load it back later.
+
+*(Note: Currently, the header contains a default persistence logic pointing to local API routes. In a future version, we will expose props to override `onSave` and `onLoad` directly on the `<EmailEditor />` component.)*
+
+For now, the easiest way to customize persistence is to fork the component or mount the internal Redux store if you need deep control.
+
+## Exporting HTML
+
+The library includes a utility to generate email-ready HTML from the editor state.
+
+```typescript
+import { generateHtml } from 'email-newsletter-builder';
+
+// Assuming you have access to the editor state (e.g., via a custom save handler)
+const html = generateHtml(editorState);
+console.log(html);
+```
+
+## Development
+
+If you want to run this project locally to contribute:
+
+```bash
+git clone git@github.com:sunsoftny/email-newsletter-builder.git
+cd email-newsletter-builder
+npm install
+npm run dev
+```
+
+## License
+
+MIT © [Sunsoft NY](https://github.com/sunsoftny)
