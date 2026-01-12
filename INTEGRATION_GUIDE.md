@@ -191,3 +191,84 @@ export async function POST(req: Request) {
     }
 }
 ```
+---
+
+## 4. Integration with Non-React Backends (Django, PHP, Laravel, etc.)
+
+Since this library is a React component, it cannot be directly imported into templates like Django (Jinja2) or PHP (Blade).
+
+### Recommended Strategy: The Micro-Frontend Wrapper
+
+1.  **Create a small Next.js or Vite React App** that installs and renders `email-newsletter-builder`.
+2.  **Host this app** (e.g., on Vercel, Netlify, or a subfolder of your main server).
+3.  **Embed via Iframe**: inside your Django/PHP admin panel.
+
+#### Architecture Example
+
+*   **Main App (Django/PHP)**: `https://your-app.com/admin/newsletter/create`
+*   **Editor App (Next.js)**: `https://editor.your-app.com`
+
+**In your Django/PHP Template:**
+
+```html
+<iframe 
+    src="https://editor.your-app.com?token=SESSION_TOKEN" 
+    width="100%" 
+    height="1000px" 
+    style="border: none;"
+    id="email-editor-frame"
+></iframe>
+
+<script>
+    // Listen for Save events from the iframe
+    window.addEventListener("message", (event) => {
+        // Security check: Validate origin
+        // if (event.origin !== "https://editor.your-app.com") return;
+        
+        if (event.data.type === 'EMAIL_BUILDER_SAVE') {
+            const { json, html } = event.data.payload;
+            
+            // Send to your Django/PHP backend
+            fetch('/api/newsletters/save', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}' // Django example
+                },
+                body: JSON.stringify({ json, html })
+            }).then(res => {
+                if (res.ok) alert("Newsletter saved successfully!");
+            });
+        }
+    });
+</script>
+```
+
+**In your Editor App (`editor.your-app.com`):**
+
+```tsx
+import { generateHtml } from 'email-newsletter-builder';
+
+// ... inside your component
+<EmailEditor
+    onSave={async (data) => {
+        // Generate valid HTML state structure
+        const fullState = { 
+            elements: data.elements || [], 
+            canvasSettings: data.canvasSettings,
+            selectedElementId: null,
+            history: { past: [], future: [] }
+        };
+        
+        const html = generateHtml(fullState);
+
+        // Send data back to the parent window (Django/PHP App)
+        window.parent.postMessage({
+            type: 'EMAIL_BUILDER_SAVE',
+            payload: { json: data, html }
+        }, "*"); // Change "*" to parent domain in production for security
+    }}
+/>
+```
+
+This approach keeps your frontend technology (React) decoupled from your backend logic.

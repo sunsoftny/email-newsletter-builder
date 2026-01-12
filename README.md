@@ -64,6 +64,8 @@ The editor is designed to be backend-agnostic. It provides callback props for al
 
 For a detailed walkthrough on connecting AWS S3, Supabase, Resend, or SendGrid, please read the **[Integration Guide](INTEGRATION_GUIDE.md)**.
 
+For integrating with **Django, PHP, or Laravel**, see the [Non-React Integration](INTEGRATION_GUIDE.md#4-integration-with-non-react-backends-django-php-laravel-etc) section.
+
 ### Props API
 
 ```tsx
