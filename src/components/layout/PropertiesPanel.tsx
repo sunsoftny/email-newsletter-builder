@@ -97,20 +97,89 @@ export const PropertiesPanel = () => {
                     </div>
                 </PropertySection>
 
-                <PropertySection title="Typography" icon={Type}>
-                    <div className="grid gap-2">
-                        <Label>Default Font Family</Label>
-                        <select
-                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                            value={canvasSettings.fontFamily}
-                            onChange={(e) => handleGlobalChange('fontFamily', e.target.value)}
-                        >
-                            <option value="Arial, sans-serif">Arial</option>
-                            <option value="'Helvetica Neue', Helvetica, sans-serif">Helvetica</option>
-                            <option value="'Times New Roman', Times, serif">Times New Roman</option>
-                            <option value="'Courier New', Courier, monospace">Courier New</option>
-                            <option value="Georgia, serif">Georgia</option>
-                        </select>
+                <PropertySection title="Global Styles" icon={Type}>
+                    <div className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label>Font Family</Label>
+                            <select
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                value={canvasSettings.fontFamily}
+                                onChange={(e) => handleGlobalChange('fontFamily', e.target.value)}
+                            >
+                                <optgroup label="Sans Serif">
+                                    <option value="Arial, sans-serif">Arial</option>
+                                    <option value="'Helvetica Neue', Helvetica, sans-serif">Helvetica</option>
+                                    <option value="'Open Sans', sans-serif">Open Sans</option>
+                                    <option value="'Roboto', sans-serif">Roboto</option>
+                                    <option value="Verdana, sans-serif">Verdana</option>
+                                </optgroup>
+                                <optgroup label="Serif">
+                                    <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                                    <option value="Georgia, serif">Georgia</option>
+                                    <option value="'Merriweather', serif">Merriweather</option>
+                                    <option value="'Playfair Display', serif">Playfair Display</option>
+                                </optgroup>
+                                <optgroup label="Monospace">
+                                    <option value="'Courier New', Courier, monospace">Courier New</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                                <Label>Text Color</Label>
+                                <div className="flex gap-2">
+                                    <div className="relative w-8 h-8 rounded border overflow-hidden shrink-0">
+                                        <input
+                                            type="color"
+                                            value={canvasSettings.textColor || '#000000'}
+                                            onChange={(e) => handleGlobalChange('textColor', e.target.value)}
+                                            className="absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
+                                        />
+                                    </div>
+                                    <Input
+                                        value={canvasSettings.textColor || '#000000'}
+                                        onChange={(e) => handleGlobalChange('textColor', e.target.value)}
+                                        className="h-8 font-mono text-xs"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>Link Color</Label>
+                                <div className="flex gap-2">
+                                    <div className="relative w-8 h-8 rounded border overflow-hidden shrink-0">
+                                        <input
+                                            type="color"
+                                            value={canvasSettings.linkColor || '#007bff'}
+                                            onChange={(e) => handleGlobalChange('linkColor', e.target.value)}
+                                            className="absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
+                                        />
+                                    </div>
+                                    <Input
+                                        value={canvasSettings.linkColor || '#007bff'}
+                                        onChange={(e) => handleGlobalChange('linkColor', e.target.value)}
+                                        className="h-8 font-mono text-xs"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label>Line Height</Label>
+                            <div className="flex items-center gap-4">
+                                <Input
+                                    type="number"
+                                    step="0.1"
+                                    min="1"
+                                    max="3"
+                                    value={canvasSettings.lineHeight || '1.5'}
+                                    onChange={(e) => handleGlobalChange('lineHeight', e.target.value)}
+                                />
+                                <span className="text-xs text-muted-foreground w-12 text-right">
+                                    {canvasSettings.lineHeight || 1.5}em
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </PropertySection>
             </aside>
@@ -165,17 +234,65 @@ export const PropertiesPanel = () => {
                     </div>
                 )}
 
+                {selectedElement.type === 'social' && selectedElement.content.socialLinks && (
+                    <div className="space-y-4">
+                        <Label>Social Networks</Label>
+                        {selectedElement.content.socialLinks.map((link: any, index: number) => (
+                            <div key={index} className="grid gap-2 border p-3 rounded-md bg-muted/20">
+                                <span className="text-xs font-semibold capitalize">{link.network}</span>
+                                <Input
+                                    value={link.url}
+                                    onChange={(e) => {
+                                        const newLinks = [...(selectedElement.content.socialLinks || [])];
+                                        newLinks[index] = { ...newLinks[index], url: e.target.value };
+                                        handleContentChange('socialLinks', newLinks);
+                                    }}
+                                    placeholder={`https://${link.network}.com/...`}
+                                    className="h-8 text-xs"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 {selectedElement.type === 'image' && (
                     <div className="space-y-4">
                         <div className="grid gap-2">
-                            <Label>Image Source URL</Label>
+                            <Label>Image Source</Label>
+                            <div className="flex gap-2 items-center">
+                                {/* Simulated Upload Button */}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => document.getElementById('image-upload')?.click()}
+                                >
+                                    <ImageIcon size={14} className="mr-2" />
+                                    Upload Image
+                                </Button>
+                                <input
+                                    id="image-upload"
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            // Mock upload - in real app this would call an API
+                                            const url = URL.createObjectURL(file);
+                                            handleContentChange('url', url);
+                                        }
+                                    }}
+                                />
+                            </div>
                             <div className="relative">
-                                <ImageIcon size={14} className="absolute left-3 top-2.5 text-muted-foreground" />
+                                <LinkIcon size={14} className="absolute left-3 top-2.5 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     value={selectedElement.content.url || ''}
                                     onChange={(e) => handleContentChange('url', e.target.value)}
                                     className="pl-9"
+                                    placeholder="Or paste URL..."
                                 />
                             </div>
                         </div>
@@ -195,6 +312,40 @@ export const PropertiesPanel = () => {
                                 value={selectedElement.content.alt || ''}
                                 onChange={(e) => handleContentChange('alt', e.target.value)}
                                 placeholder="Description for accessibility"
+                            />
+                        </div>
+                    </div>
+                )}
+                {selectedElement.type === 'spacer' && (
+                    <div className="grid gap-2">
+                        <Label>Height</Label>
+                        <Input
+                            type="text"
+                            value={selectedElement.style.height || '32px'}
+                            onChange={(e) => handleStyleChange('height', e.target.value)}
+                            placeholder="e.g. 32px"
+                        />
+                    </div>
+                )}
+
+                {selectedElement.type === 'divider' && (
+                    <div className="grid gap-2">
+                        <Label>Divider Color</Label>
+                        <div className="flex gap-2">
+                            <div className="relative w-8 h-8 rounded border overflow-hidden shrink-0">
+                                <input
+                                    type="color"
+                                    value={selectedElement.style.borderTopColor || '#eeeeee'}
+                                    onChange={(e) => handleStyleChange('borderTopColor', e.target.value)}
+                                    className="absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
+                                />
+                            </div>
+                            <Input
+                                type="text"
+                                value={selectedElement.style.borderTopColor || '#eeeeee'}
+                                onChange={(e) => handleStyleChange('borderTopColor', e.target.value)}
+                                placeholder="#eeeeee"
+                                className="font-mono text-xs"
                             />
                         </div>
                     </div>

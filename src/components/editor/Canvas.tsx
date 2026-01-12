@@ -12,7 +12,10 @@ export const Canvas = () => {
 
     const [{ isOver }, drop] = useDrop(() => ({
         accept: 'ELEMENT',
-        drop: (item: any) => {
+        drop: (item: any, monitor) => {
+            if (monitor.didDrop()) {
+                return;
+            }
             dispatch(addElement({ type: item.type }));
             return undefined;
         },
@@ -48,6 +51,8 @@ export const Canvas = () => {
                         width: canvasSettings.width,
                         backgroundColor: canvasSettings.backgroundColor,
                         fontFamily: canvasSettings.fontFamily,
+                        color: canvasSettings.textColor,
+                        lineHeight: canvasSettings.lineHeight,
                         maxWidth: '100%'
                     }}
                     onClick={(e) => e.stopPropagation()} // Prevent deselecting when clicking canvas area

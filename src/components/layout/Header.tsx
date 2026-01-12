@@ -5,12 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { generateHtml } from '@/lib/export';
+import { undo, redo } from '@/store/editorSlice';
 
 export const Header = () => {
+    const dispatch = useDispatch();
     const editorState = useSelector((state: RootState) => state.editor);
+    const { past, future } = editorState.history;
+
+    const handleUndo = () => dispatch(undo());
+    const handleRedo = () => dispatch(redo());
 
     const handleExport = () => {
         const html = generateHtml(editorState);
@@ -67,10 +73,10 @@ export const Header = () => {
 
             <div className="flex items-center gap-2">
                 <div className="flex items-center mr-2">
-                    <Button variant="ghost" size="icon" title="Undo">
+                    <Button variant="ghost" size="icon" title="Undo" onClick={handleUndo} disabled={past.length === 0}>
                         <Undo size={16} className="text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" title="Redo">
+                    <Button variant="ghost" size="icon" title="Redo" onClick={handleRedo} disabled={future.length === 0}>
                         <Redo size={16} className="text-muted-foreground" />
                     </Button>
                 </div>

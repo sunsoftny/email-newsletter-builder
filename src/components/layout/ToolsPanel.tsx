@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Type, Image, LayoutTemplate, MousePointerClick, Minus, Share2 } from 'lucide-react';
+import { Type, Image, LayoutTemplate, MousePointerClick, Minus, Share2, Columns } from 'lucide-react';
 import { DraggableTool } from '@/components/tools/DraggableTool';
 import { Separator } from '@/components/ui/separator';
 
@@ -27,9 +27,10 @@ export const ToolsPanel = () => {
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
                     Layouts
                 </h3>
-                <p className="text-sm text-muted-foreground italic">
-                    Advanced layouts coming soon.
-                </p>
+                <div className="grid grid-cols-2 gap-3">
+                    <DraggableTool type="columns" label="2 Columns" icon={Columns} />
+                    <DraggableTool type="columns-3" label="3 Columns" icon={Columns} />
+                </div>
             </div>
         </aside>
     );

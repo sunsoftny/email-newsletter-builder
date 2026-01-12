@@ -45,7 +45,10 @@ var initialState = {
   canvasSettings: {
     width: 600,
     backgroundColor: "#ffffff",
-    fontFamily: "Arial, sans-serif"
+    fontFamily: "Arial, sans-serif",
+    textColor: "#000000",
+    linkColor: "#007bff",
+    lineHeight: "1.5"
   },
   history: {
     past: [],
@@ -56,27 +59,71 @@ var editorSlice = createSlice({
   name: "editor",
   initialState,
   reducers: {
+    undo: (state) => {
+      if (state.history.past.length > 0) {
+        const previous = state.history.past[state.history.past.length - 1];
+        const newPast = state.history.past.slice(0, -1);
+        state.history.future.unshift({
+          elements: state.elements,
+          selectedElementId: state.selectedElementId,
+          canvasSettings: state.canvasSettings
+        });
+        state.elements = previous.elements;
+        state.selectedElementId = previous.selectedElementId;
+        state.canvasSettings = previous.canvasSettings;
+        state.history.past = newPast;
+      }
+    },
+    redo: (state) => {
+      if (state.history.future.length > 0) {
+        const next = state.history.future[0];
+        const newFuture = state.history.future.slice(1);
+        state.history.past.push({
+          elements: state.elements,
+          selectedElementId: state.selectedElementId,
+          canvasSettings: state.canvasSettings
+        });
+        state.elements = next.elements;
+        state.selectedElementId = next.selectedElementId;
+        state.canvasSettings = next.canvasSettings;
+        state.history.future = newFuture;
+      }
+    },
     addElement: (state, action) => {
+      saveHistory(state);
       const newElement = {
         id: uuidv4(),
         type: action.payload.type,
         content: getDefaultContent(action.payload.type),
         style: getDefaultStyle(action.payload.type)
       };
-      if (action.payload.index !== void 0 && action.payload.index >= 0) {
-        state.elements.splice(action.payload.index, 0, newElement);
+      const { parentId, columnId, index } = action.payload;
+      if (parentId && columnId) {
+        const parent = state.elements.find((el) => el.id === parentId);
+        if (parent && (parent.type === "columns" || parent.type === "columns-3") && parent.content.columns) {
+          const column = parent.content.columns.find((col) => col.id === columnId);
+          if (column) {
+            column.elements.push(newElement);
+          }
+        }
       } else {
-        state.elements.push(newElement);
+        if (index !== void 0 && index >= 0) {
+          state.elements.splice(index, 0, newElement);
+        } else {
+          state.elements.push(newElement);
+        }
       }
       state.selectedElementId = newElement.id;
     },
     updateElement: (state, action) => {
+      saveHistory(state);
       const index = state.elements.findIndex((el) => el.id === action.payload.id);
       if (index !== -1) {
         state.elements[index] = __spreadValues(__spreadValues({}, state.elements[index]), action.payload.changes);
       }
     },
     removeElement: (state, action) => {
+      saveHistory(state);
       state.elements = state.elements.filter((el) => el.id !== action.payload);
       if (state.selectedElementId === action.payload) {
         state.selectedElementId = null;
@@ -86,16 +133,26 @@ var editorSlice = createSlice({
       state.selectedElementId = action.payload;
     },
     moveElement: (state, action) => {
+      saveHistory(state);
       const { dragIndex, hoverIndex } = action.payload;
       const dragElement = state.elements[dragIndex];
       state.elements.splice(dragIndex, 1);
       state.elements.splice(hoverIndex, 0, dragElement);
     },
     updateCanvasSettings: (state, action) => {
+      saveHistory(state);
       state.canvasSettings = __spreadValues(__spreadValues({}, state.canvasSettings), action.payload);
     }
   }
 });
+function saveHistory(state) {
+  state.history.past.push({
+    elements: state.elements,
+    selectedElementId: state.selectedElementId,
+    canvasSettings: state.canvasSettings
+  });
+  state.history.future = [];
+}
 function getDefaultContent(type) {
   switch (type) {
     case "text":
@@ -107,7 +164,28 @@ function getDefaultContent(type) {
     case "divider":
       return {};
     case "social":
-      return { items: [] };
+      return {
+        socialLinks: [
+          { network: "facebook", url: "#" },
+          { network: "twitter", url: "#" },
+          { network: "instagram", url: "#" }
+        ]
+      };
+    case "columns":
+      return {
+        columns: [
+          { id: uuidv4(), elements: [] },
+          { id: uuidv4(), elements: [] }
+        ]
+      };
+    case "columns-3":
+      return {
+        columns: [
+          { id: uuidv4(), elements: [] },
+          { id: uuidv4(), elements: [] },
+          { id: uuidv4(), elements: [] }
+        ]
+      };
     default:
       return {};
   }
@@ -119,11 +197,15 @@ function getDefaultStyle(type) {
       return __spreadProps(__spreadValues({}, base), { backgroundColor: "#007bff", color: "#ffffff", borderRadius: "4px", textAlign: "center", width: "auto", display: "inline-block" });
     case "image":
       return __spreadProps(__spreadValues({}, base), { width: "100%", textAlign: "center" });
+    case "spacer":
+      return __spreadProps(__spreadValues({}, base), { height: "32px" });
+    case "divider":
+      return __spreadProps(__spreadValues({}, base), { borderTopWidth: "1px", borderTopColor: "#eeeeee", borderTopStyle: "solid", paddingTop: "10px", paddingBottom: "10px" });
     default:
       return base;
   }
 }
-var { addElement, updateElement, removeElement, selectElement, moveElement, updateCanvasSettings } = editorSlice.actions;
+var { addElement, updateElement, removeElement, selectElement, moveElement, updateCanvasSettings, undo, redo } = editorSlice.actions;
 var editorSlice_default = editorSlice.reducer;
 
 // src/store/index.ts
@@ -233,7 +315,7 @@ var Separator = React3.forwardRef((_a, ref) => {
 Separator.displayName = "Separator";
 
 // src/components/layout/Header.tsx
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // src/lib/export.ts
 function generateHtml(state) {
@@ -245,8 +327,11 @@ function generateHtml(state) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Newsletter</title>
+    <style>
+        a { color: ${canvasSettings.linkColor || "#007bff"}; text-decoration: underline; }
+    </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: ${canvasSettings.backgroundColor}; font-family: ${canvasSettings.fontFamily};">
+<body style="margin: 0; padding: 0; background-color: ${canvasSettings.backgroundColor}; font-family: ${canvasSettings.fontFamily}; color: ${canvasSettings.textColor || "#000000"}; line-height: ${canvasSettings.lineHeight || "1.5"};">
     <center>
         <table border="0" cellpadding="0" cellspacing="0" width="${canvasSettings.width}" style="background-color: #ffffff; margin-top: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             ${elements.map((el) => {
@@ -271,13 +356,40 @@ function generateHtml(state) {
                             </div>`;
         break;
       case "divider":
-        content = `<div style="padding: 10px 0;"><hr style="border: 0; border-top: 1px solid #eeeeee;" /></div>`;
+        content = `<div style="padding: ${el.style.padding || "10px 0"};">
+                    <hr style="border: 0; border-top: 1px solid ${el.style.borderTopColor || "#eeeeee"};" />
+                </div>`;
         break;
       case "spacer":
-        content = `<div style="height: 32px;">&nbsp;</div>`;
+        content = `<div style="height: ${el.style.height || "32px"}; line-height: ${el.style.height || "32px"}; font-size: 0;">&nbsp;</div>`;
         break;
       case "social":
-        content = `<div style="text-align: center; padding: 20px;">Social Links Placeholder</div>`;
+        content = `<div style="text-align: center; padding: 20px;">
+                    ${(el.content.socialLinks || []).map(
+          (link) => `<a href="${link.url}" style="display:inline-block; margin: 0 5px; color: ${el.style.color || "#374151"}; text-decoration: none;">${link.network}</a>`
+        ).join("")}
+                </div>`;
+        break;
+      case "columns":
+        content = `
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="50%" valign="top" style="padding: 10px;">Column 1</td>
+                            <td width="50%" valign="top" style="padding: 10px;">Column 2</td>
+                        </tr>
+                    </table>
+                `;
+        break;
+      case "columns-3":
+        content = `
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="33.33%" valign="top" style="padding: 10px;">Column 1</td>
+                            <td width="33.33%" valign="top" style="padding: 10px;">Column 2</td>
+                            <td width="33.33%" valign="top" style="padding: 10px;">Column 3</td>
+                        </tr>
+                    </table>
+                `;
         break;
     }
     return `<tr><td align="center">${content}</td></tr>`;
@@ -292,7 +404,11 @@ function generateHtml(state) {
 // src/components/layout/Header.tsx
 import { jsx as jsx4, jsxs } from "react/jsx-runtime";
 var Header = () => {
+  const dispatch = useDispatch();
   const editorState = useSelector((state) => state.editor);
+  const { past, future } = editorState.history;
+  const handleUndo = () => dispatch(undo());
+  const handleRedo = () => dispatch(redo());
   const handleExport = () => {
     const html = generateHtml(editorState);
     const blob = new Blob([html], { type: "text/html" });
@@ -343,8 +459,8 @@ var Header = () => {
     ] }),
     /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center mr-2", children: [
-        /* @__PURE__ */ jsx4(Button, { variant: "ghost", size: "icon", title: "Undo", children: /* @__PURE__ */ jsx4(Undo, { size: 16, className: "text-muted-foreground" }) }),
-        /* @__PURE__ */ jsx4(Button, { variant: "ghost", size: "icon", title: "Redo", children: /* @__PURE__ */ jsx4(Redo, { size: 16, className: "text-muted-foreground" }) })
+        /* @__PURE__ */ jsx4(Button, { variant: "ghost", size: "icon", title: "Undo", onClick: handleUndo, disabled: past.length === 0, children: /* @__PURE__ */ jsx4(Undo, { size: 16, className: "text-muted-foreground" }) }),
+        /* @__PURE__ */ jsx4(Button, { variant: "ghost", size: "icon", title: "Redo", onClick: handleRedo, disabled: future.length === 0, children: /* @__PURE__ */ jsx4(Redo, { size: 16, className: "text-muted-foreground" }) })
       ] }),
       /* @__PURE__ */ jsx4(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
       /* @__PURE__ */ jsxs(Button, { variant: "ghost", size: "sm", className: "hidden sm:flex gap-2", children: [
@@ -364,7 +480,7 @@ var Header = () => {
 };
 
 // src/components/layout/ToolsPanel.tsx
-import { Type, Image, LayoutTemplate, MousePointerClick, Minus, Share2 } from "lucide-react";
+import { Type, Image, LayoutTemplate, MousePointerClick, Minus, Share2, Columns } from "lucide-react";
 
 // src/components/tools/DraggableTool.tsx
 import { useDrag } from "react-dnd";
@@ -480,13 +596,16 @@ var ToolsPanel = () => {
     /* @__PURE__ */ jsx7(Separator, {}),
     /* @__PURE__ */ jsxs3("div", { className: "p-6 bg-muted/30 flex-1", children: [
       /* @__PURE__ */ jsx7("h3", { className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4", children: "Layouts" }),
-      /* @__PURE__ */ jsx7("p", { className: "text-sm text-muted-foreground italic", children: "Advanced layouts coming soon." })
+      /* @__PURE__ */ jsxs3("div", { className: "grid grid-cols-2 gap-3", children: [
+        /* @__PURE__ */ jsx7(DraggableTool, { type: "columns", label: "2 Columns", icon: Columns }),
+        /* @__PURE__ */ jsx7(DraggableTool, { type: "columns-3", label: "3 Columns", icon: Columns })
+      ] })
     ] })
   ] });
 };
 
 // src/components/layout/PropertiesPanel.tsx
-import { useDispatch, useSelector as useSelector2 } from "react-redux";
+import { useDispatch as useDispatch2, useSelector as useSelector2 } from "react-redux";
 import { Sliders, Type as Type2, Palette, Layout, Link as LinkIcon, Image as ImageIcon, AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
 
 // src/components/ui/label.tsx
@@ -511,7 +630,7 @@ Label.displayName = "Label";
 // src/components/layout/PropertiesPanel.tsx
 import { jsx as jsx9, jsxs as jsxs4 } from "react/jsx-runtime";
 var PropertiesPanel = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch2();
   const { elements, selectedElementId, canvasSettings } = useSelector2((state) => state.editor);
   const selectedElement = elements.find((el) => el.id === selectedElementId);
   const handleStyleChange = (key, value) => {
@@ -585,23 +704,100 @@ var PropertiesPanel = () => {
           )
         ] })
       ] }) }),
-      /* @__PURE__ */ jsx9(PropertySection, { title: "Typography", icon: Type2, children: /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx9(Label, { children: "Default Font Family" }),
-        /* @__PURE__ */ jsxs4(
-          "select",
-          {
-            className: "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
-            value: canvasSettings.fontFamily,
-            onChange: (e) => handleGlobalChange("fontFamily", e.target.value),
-            children: [
-              /* @__PURE__ */ jsx9("option", { value: "Arial, sans-serif", children: "Arial" }),
-              /* @__PURE__ */ jsx9("option", { value: "'Helvetica Neue', Helvetica, sans-serif", children: "Helvetica" }),
-              /* @__PURE__ */ jsx9("option", { value: "'Times New Roman', Times, serif", children: "Times New Roman" }),
-              /* @__PURE__ */ jsx9("option", { value: "'Courier New', Courier, monospace", children: "Courier New" }),
-              /* @__PURE__ */ jsx9("option", { value: "Georgia, serif", children: "Georgia" })
-            ]
-          }
-        )
+      /* @__PURE__ */ jsx9(PropertySection, { title: "Global Styles", icon: Type2, children: /* @__PURE__ */ jsxs4("div", { className: "grid gap-4", children: [
+        /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx9(Label, { children: "Font Family" }),
+          /* @__PURE__ */ jsxs4(
+            "select",
+            {
+              className: "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+              value: canvasSettings.fontFamily,
+              onChange: (e) => handleGlobalChange("fontFamily", e.target.value),
+              children: [
+                /* @__PURE__ */ jsxs4("optgroup", { label: "Sans Serif", children: [
+                  /* @__PURE__ */ jsx9("option", { value: "Arial, sans-serif", children: "Arial" }),
+                  /* @__PURE__ */ jsx9("option", { value: "'Helvetica Neue', Helvetica, sans-serif", children: "Helvetica" }),
+                  /* @__PURE__ */ jsx9("option", { value: "'Open Sans', sans-serif", children: "Open Sans" }),
+                  /* @__PURE__ */ jsx9("option", { value: "'Roboto', sans-serif", children: "Roboto" }),
+                  /* @__PURE__ */ jsx9("option", { value: "Verdana, sans-serif", children: "Verdana" })
+                ] }),
+                /* @__PURE__ */ jsxs4("optgroup", { label: "Serif", children: [
+                  /* @__PURE__ */ jsx9("option", { value: "'Times New Roman', Times, serif", children: "Times New Roman" }),
+                  /* @__PURE__ */ jsx9("option", { value: "Georgia, serif", children: "Georgia" }),
+                  /* @__PURE__ */ jsx9("option", { value: "'Merriweather', serif", children: "Merriweather" }),
+                  /* @__PURE__ */ jsx9("option", { value: "'Playfair Display', serif", children: "Playfair Display" })
+                ] }),
+                /* @__PURE__ */ jsx9("optgroup", { label: "Monospace", children: /* @__PURE__ */ jsx9("option", { value: "'Courier New', Courier, monospace", children: "Courier New" }) })
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs4("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
+            /* @__PURE__ */ jsx9(Label, { children: "Text Color" }),
+            /* @__PURE__ */ jsxs4("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsx9("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx9(
+                "input",
+                {
+                  type: "color",
+                  value: canvasSettings.textColor || "#000000",
+                  onChange: (e) => handleGlobalChange("textColor", e.target.value),
+                  className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
+                }
+              ) }),
+              /* @__PURE__ */ jsx9(
+                Input,
+                {
+                  value: canvasSettings.textColor || "#000000",
+                  onChange: (e) => handleGlobalChange("textColor", e.target.value),
+                  className: "h-8 font-mono text-xs"
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
+            /* @__PURE__ */ jsx9(Label, { children: "Link Color" }),
+            /* @__PURE__ */ jsxs4("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsx9("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx9(
+                "input",
+                {
+                  type: "color",
+                  value: canvasSettings.linkColor || "#007bff",
+                  onChange: (e) => handleGlobalChange("linkColor", e.target.value),
+                  className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
+                }
+              ) }),
+              /* @__PURE__ */ jsx9(
+                Input,
+                {
+                  value: canvasSettings.linkColor || "#007bff",
+                  onChange: (e) => handleGlobalChange("linkColor", e.target.value),
+                  className: "h-8 font-mono text-xs"
+                }
+              )
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx9(Label, { children: "Line Height" }),
+          /* @__PURE__ */ jsxs4("div", { className: "flex items-center gap-4", children: [
+            /* @__PURE__ */ jsx9(
+              Input,
+              {
+                type: "number",
+                step: "0.1",
+                min: "1",
+                max: "3",
+                value: canvasSettings.lineHeight || "1.5",
+                onChange: (e) => handleGlobalChange("lineHeight", e.target.value)
+              }
+            ),
+            /* @__PURE__ */ jsxs4("span", { className: "text-xs text-muted-foreground w-12 text-right", children: [
+              canvasSettings.lineHeight || 1.5,
+              "em"
+            ] })
+          ] })
+        ] })
       ] }) })
     ] });
   }
@@ -650,18 +846,73 @@ var PropertiesPanel = () => {
           ] })
         ] })
       ] }),
+      selectedElement.type === "social" && selectedElement.content.socialLinks && /* @__PURE__ */ jsxs4("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsx9(Label, { children: "Social Networks" }),
+        selectedElement.content.socialLinks.map((link, index) => /* @__PURE__ */ jsxs4("div", { className: "grid gap-2 border p-3 rounded-md bg-muted/20", children: [
+          /* @__PURE__ */ jsx9("span", { className: "text-xs font-semibold capitalize", children: link.network }),
+          /* @__PURE__ */ jsx9(
+            Input,
+            {
+              value: link.url,
+              onChange: (e) => {
+                const newLinks = [...selectedElement.content.socialLinks || []];
+                newLinks[index] = __spreadProps(__spreadValues({}, newLinks[index]), { url: e.target.value });
+                handleContentChange("socialLinks", newLinks);
+              },
+              placeholder: `https://${link.network}.com/...`,
+              className: "h-8 text-xs"
+            }
+          )
+        ] }, index))
+      ] }),
       selectedElement.type === "image" && /* @__PURE__ */ jsxs4("div", { className: "space-y-4", children: [
         /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx9(Label, { children: "Image Source URL" }),
+          /* @__PURE__ */ jsx9(Label, { children: "Image Source" }),
+          /* @__PURE__ */ jsxs4("div", { className: "flex gap-2 items-center", children: [
+            /* @__PURE__ */ jsxs4(
+              Button,
+              {
+                variant: "outline",
+                size: "sm",
+                className: "w-full",
+                onClick: () => {
+                  var _a;
+                  return (_a = document.getElementById("image-upload")) == null ? void 0 : _a.click();
+                },
+                children: [
+                  /* @__PURE__ */ jsx9(ImageIcon, { size: 14, className: "mr-2" }),
+                  "Upload Image"
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsx9(
+              "input",
+              {
+                id: "image-upload",
+                type: "file",
+                className: "hidden",
+                accept: "image/*",
+                onChange: (e) => {
+                  var _a;
+                  const file = (_a = e.target.files) == null ? void 0 : _a[0];
+                  if (file) {
+                    const url = URL.createObjectURL(file);
+                    handleContentChange("url", url);
+                  }
+                }
+              }
+            )
+          ] }),
           /* @__PURE__ */ jsxs4("div", { className: "relative", children: [
-            /* @__PURE__ */ jsx9(ImageIcon, { size: 14, className: "absolute left-3 top-2.5 text-muted-foreground" }),
+            /* @__PURE__ */ jsx9(LinkIcon, { size: 14, className: "absolute left-3 top-2.5 text-muted-foreground" }),
             /* @__PURE__ */ jsx9(
               Input,
               {
                 type: "text",
                 value: selectedElement.content.url || "",
                 onChange: (e) => handleContentChange("url", e.target.value),
-                className: "pl-9"
+                className: "pl-9",
+                placeholder: "Or paste URL..."
               }
             )
           ] })
@@ -685,6 +936,42 @@ var PropertiesPanel = () => {
               value: selectedElement.content.alt || "",
               onChange: (e) => handleContentChange("alt", e.target.value),
               placeholder: "Description for accessibility"
+            }
+          )
+        ] })
+      ] }),
+      selectedElement.type === "spacer" && /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx9(Label, { children: "Height" }),
+        /* @__PURE__ */ jsx9(
+          Input,
+          {
+            type: "text",
+            value: selectedElement.style.height || "32px",
+            onChange: (e) => handleStyleChange("height", e.target.value),
+            placeholder: "e.g. 32px"
+          }
+        )
+      ] }),
+      selectedElement.type === "divider" && /* @__PURE__ */ jsxs4("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx9(Label, { children: "Divider Color" }),
+        /* @__PURE__ */ jsxs4("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx9("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx9(
+            "input",
+            {
+              type: "color",
+              value: selectedElement.style.borderTopColor || "#eeeeee",
+              onChange: (e) => handleStyleChange("borderTopColor", e.target.value),
+              className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
+            }
+          ) }),
+          /* @__PURE__ */ jsx9(
+            Input,
+            {
+              type: "text",
+              value: selectedElement.style.borderTopColor || "#eeeeee",
+              onChange: (e) => handleStyleChange("borderTopColor", e.target.value),
+              placeholder: "#eeeeee",
+              className: "font-mono text-xs"
             }
           )
         ] })
@@ -788,21 +1075,59 @@ var PropertiesPanel = () => {
 };
 
 // src/components/editor/Canvas.tsx
-import { useDrop as useDrop2 } from "react-dnd";
-import { useDispatch as useDispatch3, useSelector as useSelector4 } from "react-redux";
+import { useDrop as useDrop3 } from "react-dnd";
+import { useDispatch as useDispatch5, useSelector as useSelector4 } from "react-redux";
 
 // src/components/editor/CanvasElement.tsx
 import React6 from "react";
-import { useDrag as useDrag2, useDrop } from "react-dnd";
-import { useDispatch as useDispatch2, useSelector as useSelector3 } from "react-redux";
-import { Trash2 } from "lucide-react";
-import { jsx as jsx10, jsxs as jsxs5 } from "react/jsx-runtime";
+import { useDrag as useDrag2, useDrop as useDrop2 } from "react-dnd";
+import { useDispatch as useDispatch4, useSelector as useSelector3 } from "react-redux";
+import { Trash2, Facebook, Twitter, Instagram, Linkedin, Share2 as Share22 } from "lucide-react";
+
+// src/components/editor/ColumnDropZone.tsx
+import { useDrop } from "react-dnd";
+import { useDispatch as useDispatch3 } from "react-redux";
+import { jsx as jsx10 } from "react/jsx-runtime";
+var ColumnDropZone = ({ parentId, columnId, elements }) => {
+  const dispatch = useDispatch3();
+  const [{ isOver, canDrop }, drop] = useDrop(() => ({
+    accept: "ELEMENT",
+    drop: (item, monitor) => {
+      if (monitor.didDrop()) {
+        return;
+      }
+      dispatch(addElement({ type: item.type, parentId, columnId }));
+      return { droppedInColumn: true };
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop()
+    })
+  }));
+  return /* @__PURE__ */ jsx10(
+    "div",
+    {
+      ref: drop,
+      className: `flex-1 min-h-[50px] p-2 transition-colors flex flex-col gap-2
+                ${isOver ? "bg-indigo-50 border-2 border-indigo-300 border-dashed ring-2 ring-indigo-200" : "bg-transparent border border-dashed border-gray-200"}
+                ${elements.length === 0 ? "items-center justify-center" : ""}
+            `,
+      children: elements.length === 0 ? /* @__PURE__ */ jsx10("div", { className: "text-xs text-muted-foreground pointer-events-none", children: "Drop here" }) : elements.map((el, index) => (
+        // Note: We might need to pass context that this is nested if we want nested sorting later
+        /* @__PURE__ */ jsx10(CanvasElement, { element: el, index }, el.id)
+      ))
+    }
+  );
+};
+
+// src/components/editor/CanvasElement.tsx
+import { jsx as jsx11, jsxs as jsxs5 } from "react/jsx-runtime";
 var CanvasElement = ({ element, index }) => {
-  const dispatch = useDispatch2();
+  const dispatch = useDispatch4();
   const selectedId = useSelector3((state) => state.editor.selectedElementId);
   const isSelected = selectedId === element.id;
   const ref = React6.useRef(null);
-  const [{ handlerId }, drop] = useDrop({
+  const [{ handlerId }, drop] = useDrop2({
     accept: "CANVAS_ELEMENT",
     collect(monitor) {
       return {
@@ -841,19 +1166,54 @@ var CanvasElement = ({ element, index }) => {
     dispatch(removeElement(element.id));
   };
   const renderContent = () => {
+    var _a, _b;
     switch (element.type) {
       case "text":
-        return /* @__PURE__ */ jsx10("p", { style: { fontSize: "inherit", color: "inherit" }, children: element.content.text });
+        return /* @__PURE__ */ jsx11("p", { style: { fontSize: "inherit", color: "inherit" }, children: element.content.text });
       case "button":
-        return /* @__PURE__ */ jsx10("a", { href: element.content.url, style: { display: "block", textDecoration: "none", color: "inherit" }, children: element.content.label });
+        return /* @__PURE__ */ jsx11("a", { href: element.content.url, style: { display: "block", textDecoration: "none", color: "inherit" }, children: element.content.label });
       case "image":
-        return /* @__PURE__ */ jsx10("img", { src: element.content.url, alt: element.content.alt, style: { maxWidth: "100%", display: "block" } });
+        return /* @__PURE__ */ jsx11("img", { src: element.content.url, alt: element.content.alt, style: { maxWidth: "100%", display: "block" } });
       case "divider":
-        return /* @__PURE__ */ jsx10("hr", { style: { borderTop: "1px solid #ccc" } });
+        return /* @__PURE__ */ jsx11("hr", { style: {
+          borderTopWidth: element.style.borderTopWidth || "1px",
+          borderTopColor: element.style.borderTopColor || "#eeeeee",
+          borderTopStyle: element.style.borderTopStyle || "solid"
+        } });
+      case "spacer":
+        return /* @__PURE__ */ jsx11("div", { style: { height: element.style.height || "32px" } });
       case "social":
-        return /* @__PURE__ */ jsx10("div", { children: "Social Icons" });
-      default:
-        return /* @__PURE__ */ jsx10("div", { children: "Unknown Element" });
+        return /* @__PURE__ */ jsxs5("div", { className: "flex gap-2 justify-center", children: [
+          (_a = element.content.socialLinks) == null ? void 0 : _a.map((link, i) => {
+            const iconSize = 24;
+            const color = element.style.color || "#374151";
+            switch (link.network) {
+              case "facebook":
+                return /* @__PURE__ */ jsx11(Facebook, { size: iconSize, color }, i);
+              case "twitter":
+                return /* @__PURE__ */ jsx11(Twitter, { size: iconSize, color }, i);
+              case "instagram":
+                return /* @__PURE__ */ jsx11(Instagram, { size: iconSize, color }, i);
+              case "linkedin":
+                return /* @__PURE__ */ jsx11(Linkedin, { size: iconSize, color }, i);
+              default:
+                return /* @__PURE__ */ jsx11(Share22, { size: iconSize, color }, i);
+            }
+          }),
+          (!element.content.socialLinks || element.content.socialLinks.length === 0) && /* @__PURE__ */ jsx11("span", { className: "text-slate-400 italic text-sm", children: "No social links" })
+        ] });
+      case "columns":
+      case "columns-3":
+        return /* @__PURE__ */ jsx11("div", { className: "flex w-full", style: { gap: "0" }, children: (_b = element.content.columns) == null ? void 0 : _b.map((col, i) => /* @__PURE__ */ jsx11(
+          ColumnDropZone,
+          {
+            parentId: element.id,
+            columnId: col.id,
+            elements: col.elements
+          },
+          col.id
+        )) });
+        return /* @__PURE__ */ jsx11("div", { children: "Unknown Element" });
     }
   };
   return /* @__PURE__ */ jsxs5(
@@ -872,12 +1232,12 @@ var CanvasElement = ({ element, index }) => {
         opacity: isDragging ? 0.3 : 1
       }, element.style),
       children: [
-        isSelected && /* @__PURE__ */ jsx10(
+        isSelected && /* @__PURE__ */ jsx11(
           "div",
           {
             className: "absolute -top-3 -right-3 bg-white shadow-md rounded-full p-1 cursor-pointer z-50 group-hover:block",
             onClick: handleDelete,
-            children: /* @__PURE__ */ jsx10(Trash2, { size: 14, className: "text-red-500" })
+            children: /* @__PURE__ */ jsx11(Trash2, { size: 14, className: "text-red-500" })
           }
         ),
         renderContent()
@@ -887,13 +1247,16 @@ var CanvasElement = ({ element, index }) => {
 };
 
 // src/components/editor/Canvas.tsx
-import { jsx as jsx11, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx12, jsxs as jsxs6 } from "react/jsx-runtime";
 var Canvas = () => {
-  const dispatch = useDispatch3();
+  const dispatch = useDispatch5();
   const { elements, canvasSettings } = useSelector4((state) => state.editor);
-  const [{ isOver }, drop] = useDrop2(() => ({
+  const [{ isOver }, drop] = useDrop3(() => ({
     accept: "ELEMENT",
-    drop: (item) => {
+    drop: (item, monitor) => {
+      if (monitor.didDrop()) {
+        return;
+      }
       dispatch(addElement({ type: item.type }));
       return void 0;
     },
@@ -904,7 +1267,7 @@ var Canvas = () => {
   const handleBackgroundClick = () => {
     dispatch(selectElement(null));
   };
-  return /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsx12(
     "main",
     {
       className: "flex-1 bg-slate-100/50 p-10 overflow-y-auto flex justify-center relative z-0",
@@ -915,7 +1278,7 @@ var Canvas = () => {
           canvasSettings.width,
           "px"
         ] }),
-        /* @__PURE__ */ jsx11(
+        /* @__PURE__ */ jsx12(
           "div",
           {
             ref: drop,
@@ -927,20 +1290,22 @@ var Canvas = () => {
               width: canvasSettings.width,
               backgroundColor: canvasSettings.backgroundColor,
               fontFamily: canvasSettings.fontFamily,
+              color: canvasSettings.textColor,
+              lineHeight: canvasSettings.lineHeight,
               maxWidth: "100%"
             },
             onClick: (e) => e.stopPropagation(),
-            children: elements.length === 0 ? /* @__PURE__ */ jsx11("div", { className: "absolute inset-0 flex flex-col items-center justify-center pointer-events-none", children: /* @__PURE__ */ jsxs6("div", { className: "border-2 border-dashed border-slate-200 rounded-xl p-12 flex flex-col items-center text-center max-w-sm mx-auto", children: [
-              /* @__PURE__ */ jsx11("div", { className: "w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4", children: /* @__PURE__ */ jsx11("span", { className: "text-3xl text-slate-300", children: "+" }) }),
-              /* @__PURE__ */ jsx11("h3", { className: "text-slate-900 font-medium mb-1", children: "Start Building" }),
-              /* @__PURE__ */ jsx11("p", { className: "text-slate-500 text-sm", children: "Drag and drop elements from the left panel to begin designing your newsletter." })
+            children: elements.length === 0 ? /* @__PURE__ */ jsx12("div", { className: "absolute inset-0 flex flex-col items-center justify-center pointer-events-none", children: /* @__PURE__ */ jsxs6("div", { className: "border-2 border-dashed border-slate-200 rounded-xl p-12 flex flex-col items-center text-center max-w-sm mx-auto", children: [
+              /* @__PURE__ */ jsx12("div", { className: "w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4", children: /* @__PURE__ */ jsx12("span", { className: "text-3xl text-slate-300", children: "+" }) }),
+              /* @__PURE__ */ jsx12("h3", { className: "text-slate-900 font-medium mb-1", children: "Start Building" }),
+              /* @__PURE__ */ jsx12("p", { className: "text-slate-500 text-sm", children: "Drag and drop elements from the left panel to begin designing your newsletter." })
             ] }) }) : /* @__PURE__ */ jsxs6("div", { className: "flex flex-col w-full h-full", children: [
-              elements.map((element, index) => /* @__PURE__ */ jsx11(CanvasElement, { element, index }, element.id)),
-              /* @__PURE__ */ jsx11("div", { className: "flex-1 min-h-[50px] transition-colors" })
+              elements.map((element, index) => /* @__PURE__ */ jsx12(CanvasElement, { element, index }, element.id)),
+              /* @__PURE__ */ jsx12("div", { className: "flex-1 min-h-[50px] transition-colors" })
             ] })
           }
         ),
-        /* @__PURE__ */ jsx11("div", { className: "h-20" }),
+        /* @__PURE__ */ jsx12("div", { className: "h-20" }),
         " "
       ] })
     }
@@ -948,14 +1313,14 @@ var Canvas = () => {
 };
 
 // src/components/EmailEditor.tsx
-import { jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs7 } from "react/jsx-runtime";
 var EmailEditor = () => {
-  return /* @__PURE__ */ jsx12(Provider, { store, children: /* @__PURE__ */ jsx12(DndProvider, { backend: HTML5Backend, children: /* @__PURE__ */ jsxs7("div", { className: "flex flex-col h-full w-full overflow-hidden bg-background text-foreground", children: [
-    /* @__PURE__ */ jsx12(Header, {}),
+  return /* @__PURE__ */ jsx13(Provider, { store, children: /* @__PURE__ */ jsx13(DndProvider, { backend: HTML5Backend, children: /* @__PURE__ */ jsxs7("div", { className: "flex flex-col h-full w-full overflow-hidden bg-background text-foreground", children: [
+    /* @__PURE__ */ jsx13(Header, {}),
     /* @__PURE__ */ jsxs7("div", { className: "flex flex-1 overflow-hidden relative", children: [
-      /* @__PURE__ */ jsx12(ToolsPanel, {}),
-      /* @__PURE__ */ jsx12(Canvas, {}),
-      /* @__PURE__ */ jsx12(PropertiesPanel, {})
+      /* @__PURE__ */ jsx13(ToolsPanel, {}),
+      /* @__PURE__ */ jsx13(Canvas, {}),
+      /* @__PURE__ */ jsx13(PropertiesPanel, {})
     ] })
   ] }) }) });
 };
@@ -963,11 +1328,12 @@ export {
   EmailEditor,
   addElement,
   cn,
-  editorSlice,
   generateHtml,
   moveElement,
+  redo,
   removeElement,
   selectElement,
+  undo,
   updateCanvasSettings,
   updateElement
 };

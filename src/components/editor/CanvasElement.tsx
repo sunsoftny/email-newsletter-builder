@@ -5,7 +5,8 @@ import { useDrag, useDrop } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectElement, moveElement, removeElement } from '@/store/editorSlice'; // moveElement action needs to be verified
 import { RootState } from '@/store';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Facebook, Twitter, Instagram, Linkedin, Share2 } from 'lucide-react';
+import { ColumnDropZone } from './ColumnDropZone';
 
 interface CanvasElementProps {
     element: EditorElement;
@@ -76,10 +77,46 @@ export const CanvasElement: React.FC<CanvasElementProps> = ({ element, index }) 
                 // eslint-disable-next-line @next/next/no-img-element
                 return <img src={element.content.url} alt={element.content.alt} style={{ maxWidth: '100%', display: 'block' }} />;
             case 'divider':
-                return <hr style={{ borderTop: '1px solid #ccc' }} />;
+                return <hr style={{
+                    borderTopWidth: element.style.borderTopWidth || '1px',
+                    borderTopColor: element.style.borderTopColor || '#eeeeee',
+                    borderTopStyle: element.style.borderTopStyle || 'solid'
+                }} />;
+            case 'spacer':
+                return <div style={{ height: element.style.height || '32px' }}></div>;
             case 'social':
-                return <div>Social Icons</div>;
-            default:
+                return (
+                    <div className="flex gap-2 justify-center">
+                        {element.content.socialLinks?.map((link, i) => {
+                            const iconSize = 24;
+                            const color = element.style.color || '#374151'; // Default gray-700
+                            switch (link.network) {
+                                case 'facebook': return <Facebook key={i} size={iconSize} color={color} />;
+                                case 'twitter': return <Twitter key={i} size={iconSize} color={color} />;
+                                case 'instagram': return <Instagram key={i} size={iconSize} color={color} />;
+                                case 'linkedin': return <Linkedin key={i} size={iconSize} color={color} />;
+                                default: return <Share2 key={i} size={iconSize} color={color} />;
+                            }
+                        })}
+                        {(!element.content.socialLinks || element.content.socialLinks.length === 0) && (
+                            <span className="text-slate-400 italic text-sm">No social links</span>
+                        )}
+                    </div>
+                );
+            case 'columns':
+            case 'columns-3':
+                return (
+                    <div className="flex w-full" style={{ gap: '0' }}>
+                        {element.content.columns?.map((col, i) => (
+                            <ColumnDropZone
+                                key={col.id}
+                                parentId={element.id}
+                                columnId={col.id}
+                                elements={col.elements}
+                            />
+                        ))}
+                    </div>
+                );
                 return <div>Unknown Element</div>;
         }
     };

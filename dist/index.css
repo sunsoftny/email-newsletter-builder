@@ -24,6 +24,9 @@
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-blue-300: oklch(80.9% 0.105 251.813);
     --color-blue-500: oklch(62.3% 0.214 259.815);
+    --color-indigo-50: oklch(96.2% 0.018 272.314);
+    --color-indigo-200: oklch(87% 0.065 274.039);
+    --color-indigo-300: oklch(78.5% 0.115 274.713);
     --color-indigo-500: oklch(58.5% 0.233 277.117);
     --color-slate-50: oklch(98.4% 0.003 247.858);
     --color-slate-100: oklch(96.8% 0.007 247.896);
@@ -32,6 +35,7 @@
     --color-slate-400: oklch(70.4% 0.04 256.788);
     --color-slate-500: oklch(55.4% 0.046 257.417);
     --color-slate-900: oklch(20.8% 0.042 265.755);
+    --color-gray-200: oklch(92.8% 0.006 264.531);
     --color-white: #fff;
     --spacing: 0.25rem;
     --container-sm: 24rem;
@@ -410,6 +414,9 @@
   .w-10 {
     width: calc(var(--spacing) * 10);
   }
+  .w-12 {
+    width: calc(var(--spacing) * 12);
+  }
   .w-16 {
     width: calc(var(--spacing) * 16);
   }
@@ -466,6 +473,9 @@
   }
   .cursor-pointer {
     cursor: pointer;
+  }
+  .columns-3 {
+    columns: 3;
   }
   .grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -567,6 +577,12 @@
   .border-border {
     border-color: var(--color-border);
   }
+  .border-gray-200 {
+    border-color: var(--color-gray-200);
+  }
+  .border-indigo-300 {
+    border-color: var(--color-indigo-300);
+  }
   .border-input {
     border-color: var(--color-input);
   }
@@ -605,6 +621,9 @@
   }
   .bg-destructive {
     background-color: var(--color-destructive);
+  }
+  .bg-indigo-50 {
+    background-color: var(--color-indigo-50);
   }
   .bg-muted {
     background-color: var(--color-muted);
@@ -666,6 +685,9 @@
   .p-2 {
     padding: calc(var(--spacing) * 2);
   }
+  .p-3 {
+    padding: calc(var(--spacing) * 3);
+  }
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
@@ -716,6 +738,9 @@
   }
   .text-center {
     text-align: center;
+  }
+  .text-right {
+    text-align: right;
   }
   .font-mono {
     font-family: var(--font-mono);
@@ -876,6 +901,9 @@
   }
   .ring-blue-500 {
     --tw-ring-color: var(--color-blue-500);
+  }
+  .ring-indigo-200 {
+    --tw-ring-color: var(--color-indigo-200);
   }
   .ring-indigo-500\/20 {
     --tw-ring-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 20%, transparent);
