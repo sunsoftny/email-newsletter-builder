@@ -1,6 +1,6 @@
 {
   "name": "email-newsletter-builder",
-  "version": "1.0.7",
+  "version": "1.0.22",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",

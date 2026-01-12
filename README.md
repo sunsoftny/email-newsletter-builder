@@ -8,11 +8,14 @@ A professional, drag-and-drop email newsletter builder for React and Next.js app
 [![License](https://img.shields.io/npm/l/email-newsletter-builder)](https://github.com/sunsoftny/email-newsletter-builder/blob/main/LICENSE)
 [![GitHub](https://img.shields.io/github/stars/sunsoftny/email-newsletter-builder?style=social)](https://github.com/sunsoftny/email-newsletter-builder)
 
+## 🚀 [Live Demo](https://email-newsletter-builder.vercel.app/)
+
 ## Features
 
 - 🎨 **Drag & Drop Interface**: Intuitive WYSIWYG editor.
 - 📱 **Responsive Output**: Generates HTML optimized for email clients.
-- 🧩 **Modular Components**: Text, Image, Button, Divider, Spacer, and Social blocks.
+- 🧩 **Modular Components**: Text, Image, Button, Product, Video, Countdown, Divider, Spacer, HTML, and Social blocks.
+- 🏗️ **Advanced Features**: Custom HTML block and dynamic Merge Tags for personalization.
 - 💅 **Professional UI**: Built with a clean, modern aesthetic using Tailwind CSS.
 - 💾 **State Managment**: Powered by Redux Toolkit for robust undo/redo and persistence.
 - 🔌 **Backend Agnostic**: Easily integrate with any backend (Node, PHP, Python, etc.).
@@ -57,15 +60,27 @@ export default function Page() {
 
 ## Integrating with a Backend
 
-The editor is designed to be purely frontend. To save templates, you need to connect it to your API.
+The editor is designed to be backend-agnostic. It provides callback props for all major actions (Save, Load, Upload Image, Send Test Email).
 
-### Customizing Data Persistence
+For a detailed walkthrough on connecting AWS S3, Supabase, Resend, or SendGrid, please read the **[Integration Guide](INTEGRATION_GUIDE.md)**.
 
-The editor operates on a JSON state. You can extract this state to save it, and load it back later.
+### Props API
 
-*(Note: Currently, the header contains a default persistence logic pointing to local API routes. In a future version, we will expose props to override `onSave` and `onLoad` directly on the `<EmailEditor />` component.)*
-
-For now, the easiest way to customize persistence is to fork the component or mount the internal Redux store if you need deep control.
+```tsx
+<EmailEditor
+  // Save the JSON state to your DB
+  onSave={async (data) => await saveToDb(data)}
+  
+  // Load templates from your DB
+  onLoad={async () => await fetchTemplates()}
+  
+  // Handle image uploads (S3/Supabase)
+  onUploadImage={async (file) => await uploadToS3(file)}
+  
+  // Handle test emails (Resend/SendGrid)
+  onSendTestEmail={async (email, html) => await sendTest(email, html)}
+/>
+```
 
 ## Exporting HTML
 

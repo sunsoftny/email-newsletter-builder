@@ -11,19 +11,29 @@ import { Canvas } from '@/components/editor/Canvas';
 
 import '@/app/globals.css'; // Ensure styles are included in build context if possible
 
-export const EmailEditor = () => {
+export interface EmailEditorProps {
+    onSave?: (data: any) => Promise<void>;
+    onLoad?: () => Promise<any[]>;
+    onUploadImage?: (file: File) => Promise<string>;
+    onFetchImages?: () => Promise<string[]>;
+    onSendTestEmail?: (email: string, html: string) => Promise<void>;
+    mergeTags?: { label: string; value: string }[];
+}
+
+export const EmailEditor: React.FC<EmailEditorProps> = ({ onSave, onLoad, onUploadImage, onFetchImages, onSendTestEmail, mergeTags }) => {
     return (
         <Provider store={store}>
             <DndProvider backend={HTML5Backend}>
                 <div className="flex flex-col h-full w-full overflow-hidden bg-background text-foreground">
-                    <Header />
+                    <Header onSave={onSave} onLoad={onLoad} onSendTestEmail={onSendTestEmail} />
                     <div className="flex flex-1 overflow-hidden relative">
                         <ToolsPanel />
                         <Canvas />
-                        <PropertiesPanel />
+                        <PropertiesPanel onUploadImage={onUploadImage} onFetchImages={onFetchImages} mergeTags={mergeTags} />
                     </div>
                 </div>
             </DndProvider>
         </Provider>
     );
 };
+

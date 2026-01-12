@@ -1,4 +1,9 @@
-export type ElementType = 'text' | 'image' | 'button' | 'divider' | 'social' | 'spacer' | 'columns' | 'columns-3';
+export type ElementType = 'text' | 'image' | 'button' | 'divider' | 'social' | 'spacer' | 'columns' | 'columns-3' | 'section' | 'product' | 'video' | 'countdown' | 'html';
+
+export interface MergeTag {
+    value: string;
+    label: string;
+}
 
 export interface SocialItem {
     network: 'facebook' | 'twitter' | 'instagram' | 'linkedin';
@@ -24,6 +29,8 @@ export interface ElementStyle {
     border?: string;
     // Dynamic properties for columns
     flex?: string;
+    // Mobile Overrides
+    mobile?: Partial<ElementStyle>;
     [key: string]: any;
 }
 
@@ -35,6 +42,14 @@ export interface EditorElement {
         url?: string;
         alt?: string;
         label?: string;
+        html?: string;
+        // Product / Video
+        imageUrl?: string;
+        thumbnailUrl?: string; // For video
+        price?: string;
+        currency?: string;
+        // Countdown
+        endTime?: string;
         // Social
         socialLinks?: SocialItem[];
         // Columns

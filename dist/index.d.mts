@@ -1,10 +1,25 @@
-import * as react_jsx_runtime from 'react/jsx-runtime';
+import React from 'react';
 import * as _reduxjs_toolkit from '@reduxjs/toolkit';
 import { ClassValue } from 'clsx';
 
-declare const EmailEditor: () => react_jsx_runtime.JSX.Element;
+interface EmailEditorProps {
+    onSave?: (data: any) => Promise<void>;
+    onLoad?: () => Promise<any[]>;
+    onUploadImage?: (file: File) => Promise<string>;
+    onFetchImages?: () => Promise<string[]>;
+    onSendTestEmail?: (email: string, html: string) => Promise<void>;
+    mergeTags?: {
+        label: string;
+        value: string;
+    }[];
+}
+declare const EmailEditor: React.FC<EmailEditorProps>;
 
-type ElementType = 'text' | 'image' | 'button' | 'divider' | 'social' | 'spacer' | 'columns' | 'columns-3';
+type ElementType = 'text' | 'image' | 'button' | 'divider' | 'social' | 'spacer' | 'columns' | 'columns-3' | 'section' | 'product' | 'video' | 'countdown' | 'html';
+interface MergeTag {
+    value: string;
+    label: string;
+}
 interface SocialItem {
     network: 'facebook' | 'twitter' | 'instagram' | 'linkedin';
     url: string;
@@ -26,6 +41,7 @@ interface ElementStyle {
     borderRadius?: string;
     border?: string;
     flex?: string;
+    mobile?: Partial<ElementStyle>;
     [key: string]: any;
 }
 interface EditorElement {
@@ -36,6 +52,12 @@ interface EditorElement {
         url?: string;
         alt?: string;
         label?: string;
+        html?: string;
+        imageUrl?: string;
+        thumbnailUrl?: string;
+        price?: string;
+        currency?: string;
+        endTime?: string;
         socialLinks?: SocialItem[];
         columns?: Column[];
     };
@@ -80,7 +102,8 @@ declare const moveElement: _reduxjs_toolkit.ActionCreatorWithPayload<{
 declare const updateCanvasSettings: _reduxjs_toolkit.ActionCreatorWithPayload<Partial<CanvasSettings>, "editor/updateCanvasSettings">;
 declare const undo: _reduxjs_toolkit.ActionCreatorWithoutPayload<"editor/undo">;
 declare const redo: _reduxjs_toolkit.ActionCreatorWithoutPayload<"editor/redo">;
+declare const loadState: _reduxjs_toolkit.ActionCreatorWithPayload<EditorState, "editor/loadState">;
 
 declare function cn(...inputs: ClassValue[]): string;
 
-export { type CanvasSettings, type Column, type EditorElement, type EditorState, type ElementStyle, type ElementType, EmailEditor, type SocialItem, addElement, cn, generateHtml, moveElement, redo, removeElement, selectElement, undo, updateCanvasSettings, updateElement };
+export { type CanvasSettings, type Column, type EditorElement, type EditorState, type ElementStyle, type ElementType, EmailEditor, type EmailEditorProps, type MergeTag, type SocialItem, addElement, cn, generateHtml, loadState, moveElement, redo, removeElement, selectElement, undo, updateCanvasSettings, updateElement };

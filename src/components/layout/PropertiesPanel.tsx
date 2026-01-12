@@ -1,28 +1,94 @@
 'use client';
+
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { updateElement, updateCanvasSettings } from '@/store/editorSlice';
-import { Sliders, Type, Palette, Layout, Link as LinkIcon, Image as ImageIcon, AlignLeft, AlignCenter, AlignRight, AlignJustify } from 'lucide-react';
+import { Sliders, Type, Palette, Layout, Link as LinkIcon, Image as ImageIcon, AlignLeft, AlignCenter, AlignRight, AlignJustify, Upload, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { SpacingControl } from './SpacingControl';
+import { ImageGalleryModal } from '@/components/ui/ImageGalleryModal';
 
-export const PropertiesPanel = () => {
+// Helper for Image Inputs
+const ImageInput = ({ label, value, onChange, onPickImage }: { label: string, value: string, onChange: (val: string) => void, onPickImage?: () => void }) => {
+    return (
+        <div className="grid gap-2">
+            <Label>{label}</Label>
+            <div className="flex gap-2 items-center">
+                <Input
+                    value={value || ''}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder="https://..."
+                    className="flex-1"
+                />
+                {onPickImage && (
+                    <Button
+                        variant="secondary"
+                        size="icon"
+                        onClick={onPickImage}
+                        title="Select Image"
+                    >
+                        <ImageIcon size={16} />
+                    </Button>
+                )}
+            </div>
+        </div>
+    );
+};
+
+interface PropertiesPanelProps {
+    onUploadImage?: (file: File) => Promise<string>;
+    onFetchImages?: () => Promise<string[]>;
+    mergeTags?: { label: string; value: string }[];
+}
+
+export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage, onFetchImages, mergeTags }) => {
     const dispatch = useDispatch();
     const { elements, selectedElementId, canvasSettings } = useSelector((state: RootState) => state.editor);
 
+    const [galleryCallback, setGalleryCallback] = React.useState<((url: string) => void) | null>(null);
+
+    const openGallery = (onChange: (url: string) => void) => {
+        setGalleryCallback(() => onChange);
+    };
+
     const selectedElement = elements.find(el => el.id === selectedElementId);
+
+    const isMobile = canvasSettings.width <= 480;
+
+    const getStyleValue = (key: string, defaultValue: string = '') => {
+        if (isMobile && selectedElement?.style?.mobile?.[key] !== undefined) {
+            return selectedElement.style.mobile[key];
+        }
+        return selectedElement?.style?.[key] || defaultValue;
+    };
 
     const handleStyleChange = (key: string, value: string) => {
         if (!selectedElement) return;
+
+        let newStyle = { ...selectedElement.style };
+
+        if (isMobile) {
+            // Mobile Override Mode
+            newStyle.mobile = {
+                ...newStyle.mobile,
+                [key]: value
+            };
+        } else {
+            // Desktop/Base Mode
+            newStyle = {
+                ...newStyle,
+                [key]: value
+            };
+        }
+
         dispatch(updateElement({
             id: selectedElement.id,
-            changes: {
-                style: { ...selectedElement.style, [key]: value }
-            }
+            changes: { style: newStyle }
         }));
     };
 
@@ -199,15 +265,42 @@ export const PropertiesPanel = () => {
             {/* Content Configuration */}
             <PropertySection title="Content" icon={Type}>
                 {selectedElement.type === 'text' && (
-                    <div className="grid gap-2">
-                        <Label>Text Content</Label>
-                        <textarea
-                            value={selectedElement.content.text || ''}
-                            onChange={(e) => handleContentChange('text', e.target.value)}
-                            className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                        />
+                    <div className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label>Text Content</Label>
+                            <textarea
+                                value={selectedElement.content.text || ''}
+                                onChange={(e) => handleContentChange('text', e.target.value)}
+                                className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label className="text-xs">Insert Variable</Label>
+                            <select
+                                className="h-8 w-full rounded-md border border-input bg-transparent px-2 text-xs"
+                                onChange={(e) => {
+                                    if (!e.target.value) return;
+                                    handleContentChange('text', (selectedElement.content.text || '') + e.target.value);
+                                    e.target.value = ''; // Reset
+                                }}
+                            >
+                                <option value="">Select variable...</option>
+                                {(mergeTags || [
+                                    { value: "{{ first_name }}", label: "First Name" },
+                                    { value: "{{ last_name }}", label: "Last Name" },
+                                    { value: "{{ email }}", label: "Email Address" },
+                                    { value: "{{ unsubscribe_url }}", label: "Unsubscribe Link" },
+                                    { value: "{{ current_year }}", label: "Current Year" },
+                                    { value: "{{ company_name }}", label: "Company Name" }
+                                ]).map(tag => (
+                                    <option key={tag.value} value={tag.value}>{tag.label}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 )}
+
+
 
                 {selectedElement.type === 'button' && (
                     <div className="space-y-4">
@@ -255,47 +348,62 @@ export const PropertiesPanel = () => {
                     </div>
                 )}
 
-                {selectedElement.type === 'image' && (
+                {selectedElement.type === 'product' && (
                     <div className="space-y-4">
                         <div className="grid gap-2">
-                            <Label>Image Source</Label>
-                            <div className="flex gap-2 items-center">
-                                {/* Simulated Upload Button */}
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="w-full"
-                                    onClick={() => document.getElementById('image-upload')?.click()}
-                                >
-                                    <ImageIcon size={14} className="mr-2" />
-                                    Upload Image
-                                </Button>
-                                <input
-                                    id="image-upload"
-                                    type="file"
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                        const file = e.target.files?.[0];
-                                        if (file) {
-                                            // Mock upload - in real app this would call an API
-                                            const url = URL.createObjectURL(file);
-                                            handleContentChange('url', url);
-                                        }
-                                    }}
+                            <Label>Product Title</Label>
+                            <Input
+                                value={selectedElement.content.text || ''}
+                                onChange={(e) => handleContentChange('text', e.target.value)}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                                <Label>Price</Label>
+                                <Input
+                                    value={selectedElement.content.price || ''}
+                                    onChange={(e) => handleContentChange('price', e.target.value)}
                                 />
                             </div>
-                            <div className="relative">
-                                <LinkIcon size={14} className="absolute left-3 top-2.5 text-muted-foreground" />
+                            <div className="grid gap-2">
+                                <Label>Currency</Label>
                                 <Input
-                                    type="text"
-                                    value={selectedElement.content.url || ''}
-                                    onChange={(e) => handleContentChange('url', e.target.value)}
-                                    className="pl-9"
-                                    placeholder="Or paste URL..."
+                                    value={selectedElement.content.currency || '$'}
+                                    onChange={(e) => handleContentChange('currency', e.target.value)}
                                 />
                             </div>
                         </div>
+                        <ImageInput
+                            label="Image URL"
+                            value={selectedElement.content.imageUrl || ''}
+                            onChange={(val) => handleContentChange('imageUrl', val)}
+                            onPickImage={() => openGallery((val) => handleContentChange('imageUrl', val))}
+                        />
+                        <div className="grid gap-2">
+                            <Label>Button Label</Label>
+                            <Input
+                                value={selectedElement.content.label || ''}
+                                onChange={(e) => handleContentChange('label', e.target.value)}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label>Product URL</Label>
+                            <Input
+                                value={selectedElement.content.url || ''}
+                                onChange={(e) => handleContentChange('url', e.target.value)}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {selectedElement.type === 'image' && (
+                    <div className="space-y-4">
+                        <ImageInput
+                            label="Image Source"
+                            value={selectedElement.content.url || ''}
+                            onChange={(val) => handleContentChange('url', val)}
+                            onPickImage={() => openGallery((val) => handleContentChange('url', val))}
+                        />
 
                         <div className="rounded-lg border bg-muted/20 p-4 flex items-center justify-center min-h-[120px]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -313,6 +421,59 @@ export const PropertiesPanel = () => {
                                 onChange={(e) => handleContentChange('alt', e.target.value)}
                                 placeholder="Description for accessibility"
                             />
+                        </div>
+                    </div>
+                )}
+                {selectedElement.type === 'video' && (
+                    <div className="space-y-4">
+                        <div className="grid gap-2">
+                            <Label>Video URL (YouTube/Vimeo)</Label>
+                            <Input
+                                value={selectedElement.content.url || ''}
+                                onChange={(e) => handleContentChange('url', e.target.value)}
+                                placeholder="https://youtube.com/watch?v=..."
+                            />
+                        </div>
+                        <ImageInput
+                            label="Thumbnail URL (Optional)"
+                            value={selectedElement.content.thumbnailUrl || ''}
+                            onChange={(val) => handleContentChange('thumbnailUrl', val)}
+                            onPickImage={() => openGallery((val) => handleContentChange('thumbnailUrl', val))}
+                        />
+                        <div className="grid gap-2">
+                            <Label>Alt Text</Label>
+                            <Input
+                                value={selectedElement.content.alt || ''}
+                                onChange={(e) => handleContentChange('alt', e.target.value)}
+                            />
+                        </div>
+                    </div>
+                )}
+                {selectedElement.type === 'countdown' && (
+                    <div className="space-y-4">
+                        <div className="grid gap-2">
+                            <Label>End Date & Time</Label>
+                            <Input
+                                type="datetime-local"
+                                value={selectedElement.content.endTime?.slice(0, 16) || ''}
+                                onChange={(e) => handleContentChange('endTime', new Date(e.target.value).toISOString())}
+                            />
+                        </div>
+                    </div>
+                )}
+                {selectedElement.type === 'html' && (
+                    <div className="space-y-4">
+                        <div className="grid gap-2">
+                            <Label>HTML Code</Label>
+                            <textarea
+                                className="flex min-h-[200px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 font-mono"
+                                value={selectedElement.content.html || ''}
+                                onChange={(e) => handleContentChange('html', e.target.value)}
+                                placeholder="<div>Your custom HTML here</div>"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                Warning: Invalid HTML may break the layout.
+                            </p>
                         </div>
                     </div>
                 )}
@@ -352,23 +513,37 @@ export const PropertiesPanel = () => {
                 )}
             </PropertySection>
 
+
+
+
+
             {/* Style Configuration */}
-            <PropertySection title="Appearance" icon={Palette}>
+            <PropertySection title={isMobile ? "Appearance (Mobile)" : "Appearance"} icon={Palette}>
+                {selectedElement.type === 'section' && (
+                    <div className="grid gap-2 mb-4">
+                        <Label>Background Image URL</Label>
+                        <Input
+                            value={getStyleValue('backgroundImage')?.replace(/^url\(['"](.+)['"]\)$/, '$1') || ''}
+                            onChange={(e) => handleStyleChange('backgroundImage', e.target.value ? `url('${e.target.value}')` : '')}
+                            placeholder="https://example.com/image.jpg"
+                        />
+                    </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                        <Label>Background</Label>
+                        <Label>Background Color</Label>
                         <div className="flex gap-2">
                             <div className="relative w-8 h-8 rounded border overflow-hidden shrink-0">
                                 <input
                                     type="color"
-                                    value={selectedElement.style.backgroundColor || '#ffffff'}
+                                    value={getStyleValue('backgroundColor', '#ffffff')}
                                     onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
                                     className="absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
                                 />
                             </div>
                             <Input
-                                value={selectedElement.style.backgroundColor || '#ffffff'}
+                                value={getStyleValue('backgroundColor', '#ffffff')}
                                 onChange={(e) => handleStyleChange('backgroundColor', e.target.value)}
                                 className="h-8 font-mono text-xs"
                             />
@@ -381,13 +556,13 @@ export const PropertiesPanel = () => {
                             <div className="relative w-8 h-8 rounded border overflow-hidden shrink-0">
                                 <input
                                     type="color"
-                                    value={selectedElement.style.color || '#000000'}
+                                    value={getStyleValue('color', '#000000')}
                                     onChange={(e) => handleStyleChange('color', e.target.value)}
                                     className="absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
                                 />
                             </div>
                             <Input
-                                value={selectedElement.style.color || '#000000'}
+                                value={getStyleValue('color', '#000000')}
                                 onChange={(e) => handleStyleChange('color', e.target.value)}
                                 className="h-8 font-mono text-xs"
                             />
@@ -397,15 +572,11 @@ export const PropertiesPanel = () => {
 
                 <Separator />
 
-                <div className="grid gap-2">
-                    <Label>Padding</Label>
-                    <Input
-                        type="text"
-                        value={selectedElement.style.padding || '0px'}
-                        onChange={(e) => handleStyleChange('padding', e.target.value)}
-                        placeholder="e.g. 10px 20px"
-                    />
-                </div>
+                <SpacingControl
+                    label="Padding"
+                    value={getStyleValue('padding', '0px')}
+                    onChange={(val) => handleStyleChange('padding', val)}
+                />
 
                 <div className="grid gap-2">
                     <Label>Alignment</Label>
@@ -416,7 +587,7 @@ export const PropertiesPanel = () => {
                                 onClick={() => handleStyleChange('textAlign', align)}
                                 className={cn(
                                     "flex-1 flex items-center justify-center py-1.5 rounded-sm text-muted-foreground transition-all hover:text-foreground",
-                                    selectedElement.style.textAlign === align && "bg-background shadow-sm text-foreground"
+                                    getStyleValue('textAlign') === align && "bg-background shadow-sm text-foreground"
                                 )}
                                 title={align.charAt(0).toUpperCase() + align.slice(1)}
                             >
@@ -434,13 +605,21 @@ export const PropertiesPanel = () => {
                         <Label>Border Radius</Label>
                         <Input
                             type="text"
-                            value={selectedElement.style.borderRadius || '0px'}
+                            value={getStyleValue('borderRadius', '0px')}
                             onChange={(e) => handleStyleChange('borderRadius', e.target.value)}
                             placeholder="e.g. 4px"
                         />
                     </div>
                 )}
             </PropertySection>
+
+            <ImageGalleryModal
+                isOpen={!!galleryCallback}
+                onClose={() => setGalleryCallback(null)}
+                onSelect={(url) => { if (galleryCallback) galleryCallback(url); }}
+                onUpload={onUploadImage}
+                fetchImages={onFetchImages}
+            />
         </aside>
     );
 };

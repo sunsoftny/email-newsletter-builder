@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
-import { Type, Image, LayoutTemplate, MousePointerClick, Minus, Share2, Columns } from 'lucide-react';
+import { Type, Image, LayoutTemplate, MousePointerClick, Minus, Share2, Columns, RectangleHorizontal, ShoppingBag, Video, Timer, Code } from 'lucide-react';
+
 import { DraggableTool } from '@/components/tools/DraggableTool';
 import { Separator } from '@/components/ui/separator';
 
@@ -14,10 +15,14 @@ export const ToolsPanel = () => {
                 <div className="grid grid-cols-2 gap-3">
                     <DraggableTool type="text" label="Text" icon={Type} />
                     <DraggableTool type="image" label="Image" icon={Image} />
+                    <DraggableTool type="product" label="Product" icon={ShoppingBag} />
                     <DraggableTool type="button" label="Button" icon={MousePointerClick} />
                     <DraggableTool type="divider" label="Divider" icon={Minus} />
                     <DraggableTool type="social" label="Social" icon={Share2} />
                     <DraggableTool type="spacer" label="Spacer" icon={LayoutTemplate} />
+                    <DraggableTool type="video" label="Video" icon={Video} />
+                    <DraggableTool type="countdown" label="Timer" icon={Timer} />
+                    <DraggableTool type="html" label="HTML" icon={Code} />
                 </div>
             </div>
 
@@ -28,6 +33,7 @@ export const ToolsPanel = () => {
                     Layouts
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
+                    <DraggableTool type="section" label="Section" icon={RectangleHorizontal} />
                     <DraggableTool type="columns" label="2 Columns" icon={Columns} />
                     <DraggableTool type="columns-3" label="3 Columns" icon={Columns} />
                 </div>

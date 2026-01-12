@@ -1,0 +1,306 @@
+{
+  "templates": [
+    {
+      "id": "af263b62-fd40-4e7d-bb5b-f32530c68804",
+      "name": "My Newsletter",
+      "createdAt": "2026-01-12T10:20:11.246Z",
+      "updatedAt": "2026-01-12T10:20:11.246Z",
+      "data": {
+        "elements": [],
+        "selectedElementId": null,
+        "canvasSettings": {
+          "width": 600,
+          "backgroundColor": "#ffffff",
+          "fontFamily": "'Open Sans', sans-serif",
+          "textColor": "#000000",
+          "linkColor": "#007bff",
+          "lineHeight": "1.5"
+        },
+        "history": {
+          "past": [
+            {
+              "elements": [],
+              "selectedElementId": null,
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "Arial, sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [],
+              "selectedElementId": null,
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [],
+              "selectedElementId": null,
+              "canvasSettings": {
+                "width": 375,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            }
+          ],
+          "future": []
+        }
+      }
+    },
+    {
+      "id": "27d04f46-78fc-4417-9545-5a1213efd2b6",
+      "name": "My Newsletter",
+      "createdAt": "2026-01-12T11:10:58.455Z",
+      "updatedAt": "2026-01-12T11:10:58.455Z",
+      "data": {
+        "elements": [
+          {
+            "id": "fbf8e760-44b5-4db7-b442-0b8d3eaebd60",
+            "type": "countdown",
+            "content": {
+              "endTime": "2026-01-13T11:09:05.287Z",
+              "style": {
+                "backgroundColor": "#f0f0f0",
+                "padding": "10px"
+              }
+            },
+            "style": {
+              "padding": "20px",
+              "margin": "0px",
+              "mobile": {},
+              "backgroundColor": "#b73838",
+              "color": "#ffffff",
+              "textAlign": "center"
+            }
+          },
+          {
+            "id": "2557a924-7cfe-4acb-9bfa-058d65400a07",
+            "type": "video",
+            "content": {
+              "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+              "thumbnailUrl": "https://via.placeholder.com/600x337.png?text=Video+Thumbnail",
+              "alt": "Watch Video"
+            },
+            "style": {
+              "padding": "10px",
+              "margin": "0px",
+              "mobile": {},
+              "width": "100%",
+              "textAlign": "center"
+            }
+          },
+          {
+            "id": "c1fb0ffc-156f-4dee-9165-2e8721cfdcfa",
+            "type": "text",
+            "content": {
+              "text": "Edit this text"
+            },
+            "style": {
+              "padding": "10px",
+              "margin": "0px",
+              "mobile": {}
+            }
+          }
+        ],
+        "selectedElementId": "c1fb0ffc-156f-4dee-9165-2e8721cfdcfa",
+        "canvasSettings": {
+          "width": 600,
+          "backgroundColor": "#ffffff",
+          "fontFamily": "Arial, sans-serif",
+          "textColor": "#000000",
+          "linkColor": "#007bff",
+          "lineHeight": "1.5"
+        },
+        "history": {
+          "past": [
+            {
+              "elements": [
+                {
+                  "id": "fbf8e760-44b5-4db7-b442-0b8d3eaebd60",
+                  "type": "countdown",
+                  "content": {
+                    "endTime": "2026-01-13T11:09:05.287Z",
+                    "style": {
+                      "backgroundColor": "#f0f0f0",
+                      "padding": "10px"
+                    }
+                  },
+                  "style": {
+                    "padding": "20px",
+                    "margin": "0px",
+                    "mobile": {},
+                    "backgroundColor": "#333333",
+                    "color": "#ffffff",
+                    "textAlign": "center"
+                  }
+                }
+              ],
+              "selectedElementId": null,
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "Arial, sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "fbf8e760-44b5-4db7-b442-0b8d3eaebd60",
+                  "type": "countdown",
+                  "content": {
+                    "endTime": "2026-01-13T11:09:05.287Z",
+                    "style": {
+                      "backgroundColor": "#f0f0f0",
+                      "padding": "10px"
+                    }
+                  },
+                  "style": {
+                    "padding": "20px",
+                    "margin": "0px",
+                    "mobile": {},
+                    "backgroundColor": "#b73838",
+                    "color": "#ffffff",
+                    "textAlign": "center"
+                  }
+                }
+              ],
+              "selectedElementId": "fbf8e760-44b5-4db7-b442-0b8d3eaebd60",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "Arial, sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "fbf8e760-44b5-4db7-b442-0b8d3eaebd60",
+                  "type": "countdown",
+                  "content": {
+                    "endTime": "2026-01-13T11:09:05.287Z",
+                    "style": {
+                      "backgroundColor": "#f0f0f0",
+                      "padding": "10px"
+                    }
+                  },
+                  "style": {
+                    "padding": "20px",
+                    "margin": "0px",
+                    "mobile": {},
+                    "backgroundColor": "#b73838",
+                    "color": "#ffffff",
+                    "textAlign": "center"
+                  }
+                },
+                {
+                  "id": "2557a924-7cfe-4acb-9bfa-058d65400a07",
+                  "type": "video",
+                  "content": {
+                    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    "thumbnailUrl": "https://via.placeholder.com/600x337.png?text=Video+Thumbnail",
+                    "alt": "Watch Video"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {},
+                    "width": "100%",
+                    "textAlign": "center"
+                  }
+                }
+              ],
+              "selectedElementId": "fbf8e760-44b5-4db7-b442-0b8d3eaebd60",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "Arial, sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "fbf8e760-44b5-4db7-b442-0b8d3eaebd60",
+                  "type": "countdown",
+                  "content": {
+                    "endTime": "2026-01-13T11:09:05.287Z",
+                    "style": {
+                      "backgroundColor": "#f0f0f0",
+                      "padding": "10px"
+                    }
+                  },
+                  "style": {
+                    "padding": "20px",
+                    "margin": "0px",
+                    "mobile": {},
+                    "backgroundColor": "#b73838",
+                    "color": "#ffffff",
+                    "textAlign": "center"
+                  }
+                },
+                {
+                  "id": "2557a924-7cfe-4acb-9bfa-058d65400a07",
+                  "type": "video",
+                  "content": {
+                    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    "thumbnailUrl": "https://via.placeholder.com/600x337.png?text=Video+Thumbnail",
+                    "alt": "Watch Video"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {},
+                    "width": "100%",
+                    "textAlign": "center"
+                  }
+                },
+                {
+                  "id": "c1fb0ffc-156f-4dee-9165-2e8721cfdcfa",
+                  "type": "text",
+                  "content": {
+                    "text": "Edit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": null,
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "Arial, sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            }
+          ],
+          "future": []
+        }
+      }
+    }
+  ]
+}
