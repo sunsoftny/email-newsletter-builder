@@ -27,11 +27,20 @@ const EditableText = ({
     // Sync from props if not focused
     useEffect(() => {
         if (ref.current) {
+            // Only update if NOT focused (to avoid overwriting user typing)
+            // and if content is effectively different
             if (document.activeElement !== ref.current && ref.current.innerHTML !== initialText) {
                 ref.current.innerHTML = initialText;
             }
         }
     }, [initialText]);
+
+    // Initial render setup
+    useEffect(() => {
+        if (ref.current && !ref.current.innerHTML) {
+            ref.current.innerHTML = initialText;
+        }
+    }, []);
 
     // Handle focus when entering edit mode
     useEffect(() => {
@@ -41,7 +50,7 @@ const EditableText = ({
         }
     }, [isEditing]);
 
-    const handleInput = (e: React.FormEvent<HTMLParagraphElement>) => {
+    const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
         const text = e.currentTarget.innerHTML;
         onChange(text);
     };
@@ -57,7 +66,6 @@ const EditableText = ({
             onClick={(e) => {
                 if (isEditing) e.stopPropagation();
             }}
-            dangerouslySetInnerHTML={{ __html: initialText }}
         />
     );
 };
