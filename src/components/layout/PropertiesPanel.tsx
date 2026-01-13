@@ -73,6 +73,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage,
     const [galleryCallback, setGalleryCallback] = React.useState<((url: string) => void) | null>(null);
     const [aiTextCallback, setAiTextCallback] = React.useState<((text: string) => void) | null>(null); // [NEW]
     const [aiImageCallback, setAiImageCallback] = React.useState<((url: string) => void) | null>(null); // [NEW]
+    const [isHtmlView, setIsHtmlView] = React.useState(false); // Default to Visual
 
     const openGallery = (onChange: (url: string) => void) => {
         setGalleryCallback(() => onChange);
@@ -291,23 +292,54 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage,
                         <div className="grid gap-2">
                             <div className="flex justify-between items-center">
                                 <Label>Text Content</Label>
-                                {aiFeatures?.onTextConnect && (
+                                <div className="flex items-center gap-1">
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="h-6 px-2 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                                        onClick={() => setAiTextCallback(() => (newText: string) => handleContentChange('text', newText))}
+                                        className={cn("h-6 px-2 text-xs", !isHtmlView && "bg-muted text-foreground")}
+                                        onClick={() => setIsHtmlView(false)}
                                     >
-                                        <Sparkles size={12} className="mr-1" />
-                                        AI Magic
+                                        Visual
                                     </Button>
-                                )}
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className={cn("h-6 px-2 text-xs", isHtmlView && "bg-muted text-foreground")}
+                                        onClick={() => setIsHtmlView(true)}
+                                    >
+                                        Code
+                                    </Button>
+                                    {aiFeatures?.onTextConnect && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 px-2 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 ml-1"
+                                            onClick={() => setAiTextCallback(() => (newText: string) => handleContentChange('text', newText))}
+                                        >
+                                            <Sparkles size={12} className="mr-1" />
+                                            AI
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
-                            <textarea
-                                value={selectedElement.content.text || ''}
-                                onChange={(e) => handleContentChange('text', e.target.value)}
-                                className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                            />
+
+                            {isHtmlView ? (
+                                <textarea
+                                    value={selectedElement.content.text || ''}
+                                    onChange={(e) => handleContentChange('text', e.target.value)}
+                                    className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 font-mono"
+                                />
+                            ) : (
+                                <div
+                                    key={selectedElement.id} // Force re-render on switch
+                                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-within:ring-1 focus-within:ring-ring overflow-y-auto"
+                                    contentEditable
+                                    suppressContentEditableWarning
+                                    onInput={(e) => handleContentChange('text', e.currentTarget.innerHTML)}
+                                    dangerouslySetInnerHTML={{ __html: selectedElement.content.text || '' }}
+                                    style={{ whiteSpace: 'pre-wrap' }}
+                                />
+                            )}
                         </div>
                         <div className="grid gap-2">
                             <Label className="text-xs">Insert Variable</Label>
