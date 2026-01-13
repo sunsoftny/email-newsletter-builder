@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.26] - 2026-01-13
+
+### Added
+- **Testing Suite**: Added typically comprehensive testing infrastructure using **Vitest** and **React Testing Library**.
+- **Unit Tests**: Added test coverage for `TemplateListModal`, `ImageGalleryModal`, and `SubjectLineModal` to ensure component stability and correct failure handling.
+
 ## [1.0.25] - 2026-01-13
 
 ### Fixed

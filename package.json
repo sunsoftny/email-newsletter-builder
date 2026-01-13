@@ -1,6 +1,6 @@
 {
   "name": "email-newsletter-builder",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "A professional, drag-and-drop email newsletter builder for React and Next.js applications, powered by Redux Toolkit and React DnD.",
   "keywords": [
     "react",
