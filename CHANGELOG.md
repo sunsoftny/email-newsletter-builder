@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.27] - 2026-01-13
+
+### Added
+- **Sample Templates**: Exported `SAMPLE_TEMPLATES` constant with "Welcome Email" and "Monthly Newsletter" presets to help developers get started quickly.
+- **Demo Enhancement**: The demo app now pre-loads these sample templates if no local data is found.
+
 ## [1.0.26] - 2026-01-13
 
 ### Added

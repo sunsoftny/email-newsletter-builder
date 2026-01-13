@@ -3,6 +3,7 @@ export * from './components/SignupFormBuilder';
 
 export * from './lib/types';
 export * from './lib/export';
+export * from './lib/sample-templates';
 export * from './store/editorSlice';
 // Re-exporting utils if helpful
 export { cn } from './lib/utils';

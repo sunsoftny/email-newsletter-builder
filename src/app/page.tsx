@@ -6,6 +6,7 @@ import { PropertiesPanel } from '@/components/layout/PropertiesPanel';
 import { Canvas } from '@/components/editor/Canvas';
 
 import { mockAiFeatures } from '@/lib/mock-ai';
+import { SAMPLE_TEMPLATES } from '@/lib/sample-templates';
 
 export default function Home() {
   const handleSave = async (data: any) => {
@@ -23,8 +24,21 @@ export default function Home() {
     return Promise.resolve();
   };
 
+
   const handleLoad = async () => {
-    return JSON.parse(localStorage.getItem('saved_templates') || '[]');
+    const stored = localStorage.getItem('saved_templates');
+    let templates = stored ? JSON.parse(stored) : [];
+
+    // If no templates exist, seed with samples
+    if (templates.length === 0) {
+      templates = SAMPLE_TEMPLATES.map(t => ({
+        ...t,
+        id: crypto.randomUUID(), // New ID for local copy
+        updatedAt: new Date().toISOString()
+      }));
+      localStorage.setItem('saved_templates', JSON.stringify(templates));
+    }
+    return templates;
   };
 
   const handleSendTestEmail = async (email: string, html: string) => {
