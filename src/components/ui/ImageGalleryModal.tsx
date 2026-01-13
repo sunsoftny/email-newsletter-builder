@@ -111,7 +111,7 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
                                         onClick={() => { onSelect(url); onClose(); }}
                                     >
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={url} alt="" className="w-full h-full object-cover" />
+                                        <img src={url} alt={`Gallery image ${i + 1}`} className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                             <div className="bg-white/90 p-2 rounded-full shadow-lg">
                                                 <Check size={16} className="text-primary" />

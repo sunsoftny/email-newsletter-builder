@@ -70,35 +70,41 @@ export const SubjectLineModal: React.FC<SubjectLineModalProps> = ({
                             <p className="text-sm">Analyzing content...</p>
                         </div>
                     ) : results ? (
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-center text-sm mb-2">
-                                <span className="font-medium">Recommended Subject Lines</span>
-                                {results.spamScore !== undefined && (
-                                    <span className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${results.spamScore < 3 ? 'bg-green-100 text-green-700' :
-                                        results.spamScore < 5 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
-                                        }`}>
-                                        Spam Score: {results.spamScore}/10
-                                    </span>
-                                )}
-                            </div>
+                        results.subjectLines.length > 0 ? (
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center text-sm mb-2">
+                                    <span className="font-medium">Recommended Subject Lines</span>
+                                    {results.spamScore !== undefined && (
+                                        <span className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${results.spamScore < 3 ? 'bg-green-100 text-green-700' :
+                                            results.spamScore < 5 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                            }`}>
+                                            Spam Score: {results.spamScore}/10
+                                        </span>
+                                    )}
+                                </div>
 
-                            <div className="space-y-2">
-                                {results.subjectLines.map((line, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 p-3 rounded-lg border bg-card hover:border-primary transition-colors group">
-                                        <span className="flex-1 text-sm font-medium">{line}</span>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            onClick={() => handleCopy(line, idx)}
-                                            title="Copy to clipboard"
-                                        >
-                                            {copiedIndex === idx ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
-                                        </Button>
-                                    </div>
-                                ))}
+                                <div className="space-y-2">
+                                    {results.subjectLines.map((line, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 p-3 rounded-lg border bg-card hover:border-primary transition-colors group">
+                                            <span className="flex-1 text-sm font-medium">{line}</span>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                onClick={() => handleCopy(line, idx)}
+                                                title="Copy to clipboard"
+                                            >
+                                                {copiedIndex === idx ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="text-center text-muted-foreground p-4">
+                                No suggestions found.
+                            </div>
+                        )
                     ) : (
                         <div className="text-center text-muted-foreground">
                             No result.
