@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.29] - 2026-01-13
+
+### Added
+- **Initial State Support**: Added `initialState` prop to `EmailEditor` to easily preload templates from APIs or databases.
+- **Documentation**: Updated README with examples on how to fetch and load templates.
+
 ## [1.0.28] - 2026-01-13
 
 ### Added

@@ -43,7 +43,38 @@ Import the CSS globally in your application (e.g., in `_app.tsx`, `layout.tsx`, 
 import 'email-newsletter-builder/dist/index.css';
 ```
 
-### 2. Render the Editor
+### Loading Saved Templates
+
+You can preload a template by passing the `initialState` prop. This is perfect for loading data from an API or database.
+
+```tsx
+import { useState, useEffect } from 'react';
+import { EmailEditor } from 'email-newsletter-builder';
+
+const MyEditorPage = ({ templateId }) => {
+  const [initialData, setInitialData] = useState(null);
+
+  useEffect(() => {
+    // Fetch your template JSON from your API
+    fetch(`/api/templates/${templateId}`)
+      .then(res => res.json())
+      .then(data => setInitialData(data.content));
+  }, [templateId]);
+
+  if (!initialData) return <div>Loading...</div>;
+
+  return (
+    <EmailEditor
+      initialState={initialData}
+      onSave={async (data) => {
+        console.log('Saving updated template:', data);
+      }}
+    />
+  );
+};
+```
+
+### Customizing the Editor
 Use the `EmailEditor` component in your page.
 
 ```tsx
