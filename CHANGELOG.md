@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.25] - 2026-01-13
+
+### Fixed
+- **Runtime Safety**: Added robust array checks for `templates`, `images`, and AI analysis results to prevent "map is not a function" crashes when APIs return invalid data.
+
 ## [Unreleased]
 
 ### Added

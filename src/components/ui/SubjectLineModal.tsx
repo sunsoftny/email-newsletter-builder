@@ -23,7 +23,14 @@ export const SubjectLineModal: React.FC<SubjectLineModalProps> = ({
             setIsLoading(true);
             setResults(null);
             onAnalyze()
-                .then(setResults)
+                .then(data => {
+                    if (data && Array.isArray(data.subjectLines)) {
+                        setResults(data);
+                    } else {
+                        console.error('Analysis returned invalid format:', data);
+                        setResults({ subjectLines: [], spamScore: 0 });
+                    }
+                })
                 .catch(err => {
                     console.error(err);
                     alert("Analysis failed.");
@@ -68,7 +75,7 @@ export const SubjectLineModal: React.FC<SubjectLineModalProps> = ({
                                 <span className="font-medium">Recommended Subject Lines</span>
                                 {results.spamScore !== undefined && (
                                     <span className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${results.spamScore < 3 ? 'bg-green-100 text-green-700' :
-                                            results.spamScore < 5 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                        results.spamScore < 5 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
                                         }`}>
                                         Spam Score: {results.spamScore}/10
                                     </span>

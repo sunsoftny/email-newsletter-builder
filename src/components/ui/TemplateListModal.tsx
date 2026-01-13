@@ -25,18 +25,23 @@ export const TemplateListModal: React.FC<TemplateListModalProps> = ({ isOpen, on
     const loadTemplates = async () => {
         setLoading(true);
         try {
+            let data;
             if (fetchTemplates) {
-                const data = await fetchTemplates();
+                data = await fetchTemplates();
+            } else {
+                const res = await fetch('/api/templates');
+                data = await res.json();
+            }
+
+            if (Array.isArray(data)) {
                 setTemplates(data);
             } else {
-                // Default API
-                const res = await fetch('/api/templates');
-                const data = await res.json();
-                setTemplates(data);
+                console.error('Templates data is not an array:', data);
+                setTemplates([]);
             }
         } catch (e) {
-            console.error(e);
-            alert('Failed to load templates');
+            console.error('Failed to load templates:', e);
+            setTemplates([]);
         } finally {
             setLoading(false);
         }

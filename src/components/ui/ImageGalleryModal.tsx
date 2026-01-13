@@ -31,7 +31,14 @@ export const ImageGalleryModal: React.FC<ImageGalleryModalProps> = ({
         if (isOpen && fetchImages) {
             setIsLoading(true);
             fetchImages()
-                .then(setImages)
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        setImages(data);
+                    } else {
+                        console.error('fetchImages returned non-array:', data);
+                        setImages([]);
+                    }
+                })
                 .catch(console.error)
                 .finally(() => setIsLoading(false));
         }
