@@ -22,13 +22,13 @@ const EditableText = ({
     isEditing: boolean,
     onToggleEdit: (edit: boolean) => void
 }) => {
-    const ref = useRef<HTMLParagraphElement>(null);
+    const ref = useRef<HTMLDivElement>(null);
 
     // Sync from props if not focused
     useEffect(() => {
         if (ref.current) {
-            if (document.activeElement !== ref.current && ref.current.innerText !== initialText) {
-                ref.current.innerText = initialText;
+            if (document.activeElement !== ref.current && ref.current.innerHTML !== initialText) {
+                ref.current.innerHTML = initialText;
             }
         }
     }, [initialText]);
@@ -42,12 +42,12 @@ const EditableText = ({
     }, [isEditing]);
 
     const handleInput = (e: React.FormEvent<HTMLParagraphElement>) => {
-        const text = e.currentTarget.innerText;
+        const text = e.currentTarget.innerHTML;
         onChange(text);
     };
 
     return (
-        <p
+        <div
             ref={ref}
             contentEditable={isEditing}
             suppressContentEditableWarning
@@ -57,7 +57,7 @@ const EditableText = ({
             onClick={(e) => {
                 if (isEditing) e.stopPropagation();
             }}
-        // Enter key behavior: default paragraph behavior (new line)
+            dangerouslySetInnerHTML={{ __html: initialText }}
         />
     );
 };
