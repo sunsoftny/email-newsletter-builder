@@ -1,4 +1,47 @@
-export type ElementType = 'text' | 'image' | 'button' | 'divider' | 'social' | 'spacer' | 'columns' | 'columns-3' | 'section' | 'product' | 'video' | 'countdown' | 'html';
+export type ElementType = 'text' | 'image' | 'button' | 'divider' | 'social' | 'spacer' | 'columns' | 'columns-3' | 'section' | 'product' | 'video' | 'countdown' | 'html' | 'form-input' | 'form-submit';
+
+// Form Builder Interfaces
+export interface FormStep {
+    id: string;
+    name: string; // e.g., "Teaser", "Email Opt-in", "Success"
+    elements: EditorElement[];
+}
+
+export interface FormSettings {
+    width: number;
+    backgroundColor: string;
+    borderRadius: number;
+    padding: string;
+    fontFamily: string;
+    // Overlay settings
+    overlayColor?: string;
+    overlayOpacity?: number;
+    // Position for teasers
+    position?: 'bottom-left' | 'bottom-right' | 'center';
+}
+
+export interface FormBehavior {
+    triggerConfig: {
+        scrolledPercentage?: number;
+        exitIntent?: boolean;
+        timeoutSeconds?: number;
+    };
+    displayFrequency: 'always' | 'once_per_session' | 'once_per_user';
+    deviceTargeting: 'all' | 'desktop' | 'mobile';
+}
+
+export interface FormEditorState {
+    steps: FormStep[];
+    currentStepId: string;
+    formSettings: FormSettings;
+    behavior: FormBehavior;
+    selectedElementId: string | null;
+    history: {
+        past: any[]; // simpler typing for internal history
+        future: any[];
+    };
+}
+
 
 export interface MergeTag {
     value: string;
@@ -52,6 +95,10 @@ export interface EditorElement {
         endTime?: string;
         // Social
         socialLinks?: SocialItem[];
+        // Form Inputs
+        inputType?: string;
+        placeholder?: string;
+        required?: boolean;
         // Columns
         columns?: Column[];
     };

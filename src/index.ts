@@ -1,4 +1,6 @@
 export * from './components/EmailEditor';
+export * from './components/SignupFormBuilder';
+
 export * from './lib/types';
 export * from './lib/export';
 export * from './store/editorSlice';

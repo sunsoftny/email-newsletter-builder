@@ -253,10 +253,256 @@ function getDefaultStyle(type) {
 var { addElement, updateElement, removeElement, selectElement, moveElement, updateCanvasSettings, undo, redo, loadState } = editorSlice.actions;
 var editorSlice_default = editorSlice.reducer;
 
+// src/store/formEditorSlice.ts
+import { createSlice as createSlice2 } from "@reduxjs/toolkit";
+import { v4 as uuidv42 } from "uuid";
+var initialSettings = {
+  width: 600,
+  backgroundColor: "#ffffff",
+  borderRadius: 8,
+  padding: "20px",
+  fontFamily: "Arial, sans-serif",
+  overlayColor: "rgba(0, 0, 0, 0.5)",
+  overlayOpacity: 0.5,
+  position: "center"
+};
+var initialBehavior = {
+  triggerConfig: {
+    timeoutSeconds: 5,
+    exitIntent: true
+  },
+  displayFrequency: "once_per_user",
+  deviceTargeting: "all"
+};
+var initialStep = {
+  id: uuidv42(),
+  name: "Email Opt-in",
+  elements: []
+};
+var initialState2 = {
+  steps: [initialStep],
+  currentStepId: initialStep.id,
+  formSettings: initialSettings,
+  behavior: initialBehavior,
+  selectedElementId: null,
+  history: {
+    past: [],
+    future: []
+  }
+};
+var formEditorSlice = createSlice2({
+  name: "formEditor",
+  initialState: initialState2,
+  reducers: {
+    // --- Step Management ---
+    addStep: (state, action) => {
+      saveHistory2(state);
+      const newStep = {
+        id: uuidv42(),
+        name: action.payload.name,
+        elements: []
+      };
+      state.steps.push(newStep);
+      state.currentStepId = newStep.id;
+    },
+    removeStep: (state, action) => {
+      saveHistory2(state);
+      state.steps = state.steps.filter((s) => s.id !== action.payload);
+      if (state.currentStepId === action.payload && state.steps.length > 0) {
+        state.currentStepId = state.steps[0].id;
+      }
+    },
+    setActiveStep: (state, action) => {
+      state.currentStepId = action.payload;
+      state.selectedElementId = null;
+    },
+    renameStep: (state, action) => {
+      saveHistory2(state);
+      const step = state.steps.find((s) => s.id === action.payload.id);
+      if (step) {
+        step.name = action.payload.name;
+      }
+    },
+    // --- Global Settings ---
+    updateFormSettings: (state, action) => {
+      saveHistory2(state);
+      state.formSettings = __spreadValues(__spreadValues({}, state.formSettings), action.payload);
+    },
+    updateBehavior: (state, action) => {
+      saveHistory2(state);
+      state.behavior = __spreadValues(__spreadValues({}, state.behavior), action.payload);
+    },
+    // --- Element Management (Scoped to Current Step) ---
+    addElement: (state, action) => {
+      saveHistory2(state);
+      const currentStep = state.steps.find((s) => s.id === state.currentStepId);
+      if (!currentStep) return;
+      const newElement = {
+        id: uuidv42(),
+        type: action.payload.type,
+        content: getDefaultContent2(action.payload.type),
+        style: getDefaultStyle2(action.payload.type)
+      };
+      if (action.payload.index !== void 0 && action.payload.index >= 0) {
+        currentStep.elements.splice(action.payload.index, 0, newElement);
+      } else {
+        currentStep.elements.push(newElement);
+      }
+      state.selectedElementId = newElement.id;
+    },
+    updateElement: (state, action) => {
+      saveHistory2(state);
+      const currentStep = state.steps.find((s) => s.id === state.currentStepId);
+      if (!currentStep) return;
+      const index = currentStep.elements.findIndex((el) => el.id === action.payload.id);
+      if (index !== -1) {
+        currentStep.elements[index] = __spreadValues(__spreadValues({}, currentStep.elements[index]), action.payload.changes);
+      }
+    },
+    removeElement: (state, action) => {
+      saveHistory2(state);
+      const currentStep = state.steps.find((s) => s.id === state.currentStepId);
+      if (!currentStep) return;
+      currentStep.elements = currentStep.elements.filter((el) => el.id !== action.payload);
+      if (state.selectedElementId === action.payload) {
+        state.selectedElementId = null;
+      }
+    },
+    selectElement: (state, action) => {
+      state.selectedElementId = action.payload;
+    },
+    moveElement: (state, action) => {
+      saveHistory2(state);
+      const currentStep = state.steps.find((s) => s.id === state.currentStepId);
+      if (!currentStep) return;
+      const { dragIndex, hoverIndex } = action.payload;
+      const dragElement = currentStep.elements[dragIndex];
+      currentStep.elements.splice(dragIndex, 1);
+      currentStep.elements.splice(hoverIndex, 0, dragElement);
+    },
+    // --- History ---
+    undo: (state) => {
+      if (state.history.past.length > 0) {
+        const previous = state.history.past[state.history.past.length - 1];
+        const newPast = state.history.past.slice(0, -1);
+        state.history.future.unshift({
+          steps: state.steps,
+          formSettings: state.formSettings,
+          behavior: state.behavior,
+          currentStepId: state.currentStepId
+        });
+        state.steps = previous.steps;
+        state.formSettings = previous.formSettings;
+        state.behavior = previous.behavior;
+        state.currentStepId = previous.currentStepId;
+        state.history.past = newPast;
+      }
+    },
+    redo: (state) => {
+      if (state.history.future.length > 0) {
+        const next = state.history.future[0];
+        const newFuture = state.history.future.slice(1);
+        state.history.past.push({
+          steps: state.steps,
+          formSettings: state.formSettings,
+          behavior: state.behavior,
+          currentStepId: state.currentStepId
+        });
+        state.steps = next.steps;
+        state.formSettings = next.formSettings;
+        state.behavior = next.behavior;
+        state.currentStepId = next.currentStepId;
+        state.history.future = newFuture;
+      }
+    }
+  }
+});
+function saveHistory2(state) {
+  if (state.history.past.length > 20) {
+    state.history.past.shift();
+  }
+  state.history.past.push({
+    steps: JSON.parse(JSON.stringify(state.steps)),
+    // Deep copy
+    formSettings: __spreadValues({}, state.formSettings),
+    behavior: __spreadValues({}, state.behavior),
+    currentStepId: state.currentStepId
+  });
+  state.history.future = [];
+}
+function getDefaultContent2(type) {
+  switch (type) {
+    case "text":
+      return { text: "<strong>Sign up for updates</strong><br>Get news and special offers." };
+    case "image":
+      return { url: "https://via.placeholder.com/150", alt: "Placeholder" };
+    case "form-input":
+      return { label: "Email Address", placeholder: "Enter your email", required: true, inputType: "email" };
+    case "form-submit":
+      return { label: "Subscribe", width: "100%" };
+    case "button":
+      return { label: "No thanks", url: "#", width: "auto" };
+    case "spacer":
+      return {};
+    case "divider":
+      return {};
+    default:
+      return {};
+  }
+}
+function getDefaultStyle2(type) {
+  const base = { padding: "10px", margin: "0px" };
+  switch (type) {
+    case "form-submit":
+      return __spreadProps(__spreadValues({}, base), {
+        backgroundColor: "#333333",
+        color: "#ffffff",
+        padding: "12px 24px",
+        borderRadius: "4px",
+        textAlign: "center",
+        fontWeight: "bold",
+        width: "100%",
+        cursor: "pointer"
+      });
+    case "form-input":
+      return __spreadProps(__spreadValues({}, base), {
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        padding: "10px",
+        width: "100%",
+        backgroundColor: "#fff",
+        color: "#333"
+      });
+    case "text":
+      return __spreadProps(__spreadValues({}, base), { textAlign: "center", color: "#333" });
+    case "button":
+      return __spreadProps(__spreadValues({}, base), { color: "#666", textDecoration: "underline", fontSize: "14px", textAlign: "center" });
+    default:
+      return base;
+  }
+}
+var {
+  addStep,
+  removeStep,
+  setActiveStep,
+  renameStep,
+  updateFormSettings,
+  updateBehavior,
+  addElement: addElement2,
+  updateElement: updateElement2,
+  removeElement: removeElement2,
+  selectElement: selectElement2,
+  moveElement: moveElement2,
+  undo: undo2,
+  redo: redo2
+} = formEditorSlice.actions;
+var formEditorSlice_default = formEditorSlice.reducer;
+
 // src/store/index.ts
 var store = configureStore({
   reducer: {
-    editor: editorSlice_default
+    editor: editorSlice_default,
+    formEditor: formEditorSlice_default
   }
 });
 
@@ -265,8 +511,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 // src/components/layout/Header.tsx
-import React6 from "react";
-import { Undo, Redo, Eye, Save, Download as Download2, Mail, FileText as FileText2, Monitor as Monitor2, Smartphone as Smartphone2 } from "lucide-react";
+import React9 from "react";
+import { Undo, Redo, Eye, Save, Download as Download2, Mail, FileText as FileText2, Monitor as Monitor2, Smartphone as Smartphone2, Sparkles as Sparkles2, Lightbulb as Lightbulb2 } from "lucide-react";
 
 // src/components/ui/button.tsx
 import * as React from "react";
@@ -713,9 +959,195 @@ var TemplateListModal = ({ isOpen, onClose, onLoad, fetchTemplates }) => {
   ] }) });
 };
 
+// src/components/ui/AiLayoutModal.tsx
+import { useState as useState3 } from "react";
+import { X as X3, Sparkles, Loader2 as Loader23, LayoutTemplate } from "lucide-react";
+
+// src/components/ui/label.tsx
+import * as React6 from "react";
+import { cva as cva2 } from "class-variance-authority";
+import { jsx as jsx6 } from "react/jsx-runtime";
+var labelVariants = cva2(
+  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+);
+var Label = React6.forwardRef((_a, ref) => {
+  var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
+  return /* @__PURE__ */ jsx6(
+    "label",
+    __spreadValues({
+      ref,
+      className: cn(labelVariants(), className)
+    }, props)
+  );
+});
+Label.displayName = "Label";
+
+// src/components/ui/AiLayoutModal.tsx
+import { jsx as jsx7, jsxs as jsxs3 } from "react/jsx-runtime";
+var AiLayoutModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  onGenerate
+}) => {
+  const [prompt, setPrompt] = useState3("");
+  const [isLoading, setIsLoading] = useState3(false);
+  const handleGenerate = async () => {
+    if (!prompt) return;
+    setIsLoading(true);
+    try {
+      const newState = await onGenerate(prompt);
+      onSuccess(newState);
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate layout");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  if (!isOpen) return null;
+  return /* @__PURE__ */ jsx7("div", { className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200", children: /* @__PURE__ */ jsxs3("div", { className: "bg-background w-[600px] rounded-xl shadow-2xl flex flex-col overflow-hidden border", children: [
+    /* @__PURE__ */ jsxs3("div", { className: "h-14 border-b px-4 flex items-center justify-between bg-muted/20", children: [
+      /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-2 text-primary", children: [
+        /* @__PURE__ */ jsx7(Sparkles, { size: 18 }),
+        /* @__PURE__ */ jsx7("h3", { className: "font-semibold", children: "Magic Layout Generator" })
+      ] }),
+      /* @__PURE__ */ jsx7(Button, { variant: "ghost", size: "icon", onClick: onClose, className: "h-8 w-8", children: /* @__PURE__ */ jsx7(X3, { size: 18 }) })
+    ] }),
+    /* @__PURE__ */ jsxs3("div", { className: "p-6 space-y-4", children: [
+      /* @__PURE__ */ jsxs3("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx7(Label, { children: "What would you like to build?" }),
+        /* @__PURE__ */ jsxs3("div", { className: "relative", children: [
+          /* @__PURE__ */ jsx7(
+            "textarea",
+            {
+              className: "flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none",
+              value: prompt,
+              onChange: (e) => setPrompt(e.target.value),
+              placeholder: "e.g. 'A monthly newsletter for a tech startup. Include a hero section with a big announcement, a product showcase with 3 items, and a footer with social links.'",
+              disabled: isLoading,
+              onKeyDown: (e) => {
+                if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                  handleGenerate();
+                }
+              }
+            }
+          ),
+          /* @__PURE__ */ jsx7("div", { className: "absolute bottom-2 right-2 text-xs text-muted-foreground", children: "\u2318+Enter to generate" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs3("div", { className: "flex justify-end gap-2", children: [
+        /* @__PURE__ */ jsx7(Button, { variant: "outline", onClick: onClose, disabled: isLoading, children: "Cancel" }),
+        /* @__PURE__ */ jsxs3(Button, { onClick: handleGenerate, disabled: !prompt || isLoading, className: "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0", children: [
+          isLoading ? /* @__PURE__ */ jsx7(Loader23, { className: "mr-2 h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx7(Sparkles, { className: "mr-2 h-4 w-4" }),
+          "Magic Build"
+        ] })
+      ] }),
+      isLoading && /* @__PURE__ */ jsxs3("div", { className: "flex flex-col items-center justify-center py-8 text-muted-foreground animate-pulse", children: [
+        /* @__PURE__ */ jsx7(LayoutTemplate, { size: 48, className: "mb-4 opacity-50" }),
+        /* @__PURE__ */ jsx7("p", { className: "font-medium", children: "Constructing your layout..." }),
+        /* @__PURE__ */ jsx7("p", { className: "text-xs", children: "This might take a few seconds" })
+      ] })
+    ] })
+  ] }) });
+};
+
+// src/components/ui/SubjectLineModal.tsx
+import { useState as useState4, useEffect as useEffect3 } from "react";
+import { X as X4, Lightbulb, Loader2 as Loader24, Copy, Check } from "lucide-react";
+import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
+var SubjectLineModal = ({
+  isOpen,
+  onClose,
+  onAnalyze
+}) => {
+  const [isLoading, setIsLoading] = useState4(false);
+  const [results, setResults] = useState4(null);
+  const [copiedIndex, setCopiedIndex] = useState4(null);
+  useEffect3(() => {
+    if (isOpen && onAnalyze) {
+      setIsLoading(true);
+      setResults(null);
+      onAnalyze().then(setResults).catch((err) => {
+        console.error(err);
+        alert("Analysis failed.");
+        onClose();
+      }).finally(() => setIsLoading(false));
+    }
+  }, [isOpen]);
+  const handleCopy = (text, index) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2e3);
+  };
+  if (!isOpen) return null;
+  return /* @__PURE__ */ jsx8("div", { className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200", children: /* @__PURE__ */ jsxs4("div", { className: "bg-background w-[500px] rounded-xl shadow-2xl flex flex-col overflow-hidden border", children: [
+    /* @__PURE__ */ jsxs4("div", { className: "h-14 border-b px-4 flex items-center justify-between bg-muted/20", children: [
+      /* @__PURE__ */ jsxs4("div", { className: "flex items-center gap-2 text-primary", children: [
+        /* @__PURE__ */ jsx8(Lightbulb, { size: 18 }),
+        /* @__PURE__ */ jsx8("h3", { className: "font-semibold", children: "Optimize Subject Line" })
+      ] }),
+      /* @__PURE__ */ jsx8(Button, { variant: "ghost", size: "icon", onClick: onClose, className: "h-8 w-8", children: /* @__PURE__ */ jsx8(X4, { size: 18 }) })
+    ] }),
+    /* @__PURE__ */ jsx8("div", { className: "p-6 min-h-[200px]", children: isLoading ? /* @__PURE__ */ jsxs4("div", { className: "flex flex-col items-center justify-center h-40 text-muted-foreground animate-pulse", children: [
+      /* @__PURE__ */ jsx8(Loader24, { size: 32, className: "mb-2 animate-spin" }),
+      /* @__PURE__ */ jsx8("p", { className: "text-sm", children: "Analyzing content..." })
+    ] }) : results ? /* @__PURE__ */ jsxs4("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsxs4("div", { className: "flex justify-between items-center text-sm mb-2", children: [
+        /* @__PURE__ */ jsx8("span", { className: "font-medium", children: "Recommended Subject Lines" }),
+        results.spamScore !== void 0 && /* @__PURE__ */ jsxs4("span", { className: `px-2 py-0.5 rounded text-xs font-mono font-bold ${results.spamScore < 3 ? "bg-green-100 text-green-700" : results.spamScore < 5 ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700"}`, children: [
+          "Spam Score: ",
+          results.spamScore,
+          "/10"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx8("div", { className: "space-y-2", children: results.subjectLines.map((line, idx) => /* @__PURE__ */ jsxs4("div", { className: "flex items-center gap-2 p-3 rounded-lg border bg-card hover:border-primary transition-colors group", children: [
+        /* @__PURE__ */ jsx8("span", { className: "flex-1 text-sm font-medium", children: line }),
+        /* @__PURE__ */ jsx8(
+          Button,
+          {
+            variant: "ghost",
+            size: "icon",
+            className: "h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity",
+            onClick: () => handleCopy(line, idx),
+            title: "Copy to clipboard",
+            children: copiedIndex === idx ? /* @__PURE__ */ jsx8(Check, { size: 14, className: "text-green-600" }) : /* @__PURE__ */ jsx8(Copy, { size: 14 })
+          }
+        )
+      ] }, idx)) })
+    ] }) : /* @__PURE__ */ jsx8("div", { className: "text-center text-muted-foreground", children: "No result." }) })
+  ] }) });
+};
+
+// src/lib/content-scraper.ts
+function scrapeContent(state) {
+  const textParts = [];
+  function traverse(elements) {
+    elements.forEach((el) => {
+      if (el.content.text) {
+        const text = el.content.text.replace(/<[^>]*>?/gm, " ");
+        textParts.push(text);
+      }
+      if (el.content.label) textParts.push(el.content.label);
+      if (el.content.alt) textParts.push(el.content.alt);
+      if (el.content.columns) {
+        el.content.columns.forEach((col) => traverse(col.elements));
+      }
+    });
+  }
+  traverse(state.elements);
+  return {
+    plainText: textParts.join("\n"),
+    // Joining with newlines for context
+    html: ""
+    // We might not need to regenerate HTML here if we just want text for the LLM
+  };
+}
+
 // src/components/layout/Header.tsx
-import { Fragment, jsx as jsx6, jsxs as jsxs3 } from "react/jsx-runtime";
-var Header = ({ onSave, onLoad, onSendTestEmail }) => {
+import { Fragment, jsx as jsx9, jsxs as jsxs5 } from "react/jsx-runtime";
+var Header = ({ onSave, onLoad, onSendTestEmail, aiFeatures }) => {
   const dispatch = useDispatch();
   const editorState = useSelector((state) => state.editor);
   const { past, future } = editorState.history;
@@ -763,17 +1195,19 @@ var Header = ({ onSave, onLoad, onSendTestEmail }) => {
       alert("Error saving template");
     }
   };
-  const [isPreviewOpen, setIsPreviewOpen] = React6.useState(false);
-  const [isTemplatesOpen, setIsTemplatesOpen] = React6.useState(false);
-  return /* @__PURE__ */ jsxs3(Fragment, { children: [
-    /* @__PURE__ */ jsxs3("header", { className: "h-16 border-b flex items-center justify-between px-6 sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", children: [
-      /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-4", children: [
-        /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-2", children: [
-          /* @__PURE__ */ jsx6("div", { className: "h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground", children: /* @__PURE__ */ jsx6(Mail, { size: 18 }) }),
-          /* @__PURE__ */ jsx6("span", { className: "font-semibold text-lg tracking-tight", children: "MailBuilder" })
+  const [isPreviewOpen, setIsPreviewOpen] = React9.useState(false);
+  const [isTemplatesOpen, setIsTemplatesOpen] = React9.useState(false);
+  const [isAiLayoutOpen, setIsAiLayoutOpen] = React9.useState(false);
+  const [isSubjectLineOpen, setIsSubjectLineOpen] = React9.useState(false);
+  return /* @__PURE__ */ jsxs5(Fragment, { children: [
+    /* @__PURE__ */ jsxs5("header", { className: "h-16 border-b flex items-center justify-between px-6 sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", children: [
+      /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-4", children: [
+        /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx9("div", { className: "h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground", children: /* @__PURE__ */ jsx9(Mail, { size: 18 }) }),
+          /* @__PURE__ */ jsx9("span", { className: "font-semibold text-lg tracking-tight", children: "MailBuilder" })
         ] }),
-        /* @__PURE__ */ jsx6(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
-        /* @__PURE__ */ jsx6(
+        /* @__PURE__ */ jsx9(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
+        /* @__PURE__ */ jsx9(
           Input,
           {
             type: "text",
@@ -782,19 +1216,19 @@ var Header = ({ onSave, onLoad, onSendTestEmail }) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx6("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxs3(Button, { variant: "outline", size: "sm", onClick: () => setIsTemplatesOpen(true), children: [
-          /* @__PURE__ */ jsx6(FileText2, { size: 16, className: "mr-2" }),
+      /* @__PURE__ */ jsxs5("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx9("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxs5(Button, { variant: "outline", size: "sm", onClick: () => setIsTemplatesOpen(true), children: [
+          /* @__PURE__ */ jsx9(FileText2, { size: 16, className: "mr-2" }),
           "Templates"
         ] }) }),
-        /* @__PURE__ */ jsx6(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
-        /* @__PURE__ */ jsxs3("div", { className: "flex items-center mr-2", children: [
-          /* @__PURE__ */ jsx6(Button, { variant: "ghost", size: "icon", title: "Undo", onClick: handleUndo, disabled: past.length === 0, children: /* @__PURE__ */ jsx6(Undo, { size: 16, className: "text-muted-foreground" }) }),
-          /* @__PURE__ */ jsx6(Button, { variant: "ghost", size: "icon", title: "Redo", onClick: handleRedo, disabled: future.length === 0, children: /* @__PURE__ */ jsx6(Redo, { size: 16, className: "text-muted-foreground" }) })
+        /* @__PURE__ */ jsx9(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
+        /* @__PURE__ */ jsxs5("div", { className: "flex items-center mr-2", children: [
+          /* @__PURE__ */ jsx9(Button, { variant: "ghost", size: "icon", title: "Undo", onClick: handleUndo, disabled: past.length === 0, children: /* @__PURE__ */ jsx9(Undo, { size: 16, className: "text-muted-foreground" }) }),
+          /* @__PURE__ */ jsx9(Button, { variant: "ghost", size: "icon", title: "Redo", onClick: handleRedo, disabled: future.length === 0, children: /* @__PURE__ */ jsx9(Redo, { size: 16, className: "text-muted-foreground" }) })
         ] }),
-        /* @__PURE__ */ jsx6(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
-        /* @__PURE__ */ jsxs3("div", { className: "flex items-center bg-muted rounded-lg p-1 mr-2", children: [
-          /* @__PURE__ */ jsx6(
+        /* @__PURE__ */ jsx9(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
+        /* @__PURE__ */ jsxs5("div", { className: "flex items-center bg-muted rounded-lg p-1 mr-2", children: [
+          /* @__PURE__ */ jsx9(
             Button,
             {
               variant: "ghost",
@@ -802,10 +1236,10 @@ var Header = ({ onSave, onLoad, onSendTestEmail }) => {
               className: "h-7 w-7 p-0",
               onClick: () => dispatch({ type: "editor/updateCanvasSettings", payload: { width: 600 } }),
               title: "Desktop View",
-              children: /* @__PURE__ */ jsx6(Monitor2, { size: 14 })
+              children: /* @__PURE__ */ jsx9(Monitor2, { size: 14 })
             }
           ),
-          /* @__PURE__ */ jsx6(
+          /* @__PURE__ */ jsx9(
             Button,
             {
               variant: "ghost",
@@ -813,26 +1247,76 @@ var Header = ({ onSave, onLoad, onSendTestEmail }) => {
               className: "h-7 w-7 p-0",
               onClick: () => dispatch({ type: "editor/updateCanvasSettings", payload: { width: 375 } }),
               title: "Mobile View",
-              children: /* @__PURE__ */ jsx6(Smartphone2, { size: 14 })
+              children: /* @__PURE__ */ jsx9(Smartphone2, { size: 14 })
             }
           )
         ] }),
-        /* @__PURE__ */ jsx6(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
-        /* @__PURE__ */ jsxs3(Button, { variant: "ghost", size: "sm", className: "hidden sm:flex gap-2", onClick: () => setIsPreviewOpen(true), children: [
-          /* @__PURE__ */ jsx6(Eye, { size: 16 }),
+        /* @__PURE__ */ jsx9(Separator, { orientation: "vertical", className: "h-6 mx-2" }),
+        /* @__PURE__ */ jsxs5(Button, { variant: "ghost", size: "sm", className: "hidden sm:flex gap-2", onClick: () => setIsPreviewOpen(true), children: [
+          /* @__PURE__ */ jsx9(Eye, { size: 16 }),
           "Preview"
         ] }),
-        /* @__PURE__ */ jsxs3(Button, { variant: "outline", size: "sm", className: "hidden sm:flex gap-2", onClick: handleSave, children: [
-          /* @__PURE__ */ jsx6(Save, { size: 16 }),
+        (aiFeatures == null ? void 0 : aiFeatures.onLayoutConnect) && /* @__PURE__ */ jsxs5(
+          Button,
+          {
+            variant: "ghost",
+            size: "sm",
+            className: "hidden sm:flex gap-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50",
+            onClick: () => setIsAiLayoutOpen(true),
+            children: [
+              /* @__PURE__ */ jsx9(Sparkles2, { size: 16 }),
+              "Magic Build"
+            ]
+          }
+        ),
+        (aiFeatures == null ? void 0 : aiFeatures.onAnalyzeConnect) && /* @__PURE__ */ jsxs5(
+          Button,
+          {
+            variant: "ghost",
+            size: "sm",
+            className: "hidden sm:flex gap-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50",
+            onClick: () => setIsSubjectLineOpen(true),
+            children: [
+              /* @__PURE__ */ jsx9(Lightbulb2, { size: 16 }),
+              "Analyze"
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs5(Button, { variant: "outline", size: "sm", className: "hidden sm:flex gap-2", onClick: handleSave, children: [
+          /* @__PURE__ */ jsx9(Save, { size: 16 }),
           "Save"
         ] }),
-        /* @__PURE__ */ jsxs3(Button, { size: "sm", className: "gap-2", onClick: handleExport, children: [
-          /* @__PURE__ */ jsx6(Download2, { size: 16 }),
+        /* @__PURE__ */ jsxs5(Button, { size: "sm", className: "gap-2", onClick: handleExport, children: [
+          /* @__PURE__ */ jsx9(Download2, { size: 16 }),
           "Export"
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsx6(
+    (aiFeatures == null ? void 0 : aiFeatures.onLayoutConnect) && /* @__PURE__ */ jsx9(
+      AiLayoutModal,
+      {
+        isOpen: isAiLayoutOpen,
+        onClose: () => setIsAiLayoutOpen(false),
+        onSuccess: (newState) => {
+          dispatch(loadState(newState));
+          setIsAiLayoutOpen(false);
+        },
+        onGenerate: aiFeatures.onLayoutConnect
+      }
+    ),
+    (aiFeatures == null ? void 0 : aiFeatures.onAnalyzeConnect) && /* @__PURE__ */ jsx9(
+      SubjectLineModal,
+      {
+        isOpen: isSubjectLineOpen,
+        onClose: () => setIsSubjectLineOpen(false),
+        onAnalyze: async () => {
+          const { plainText } = scrapeContent(editorState);
+          const html = generateHtml(editorState);
+          return aiFeatures.onAnalyzeConnect(editorState, html);
+        }
+      }
+    ),
+    /* @__PURE__ */ jsx9(
       PreviewModal,
       {
         isOpen: isPreviewOpen,
@@ -841,7 +1325,7 @@ var Header = ({ onSave, onLoad, onSendTestEmail }) => {
         onSendTestEmail
       }
     ),
-    /* @__PURE__ */ jsx6(
+    /* @__PURE__ */ jsx9(
       TemplateListModal,
       {
         isOpen: isTemplatesOpen,
@@ -854,17 +1338,17 @@ var Header = ({ onSave, onLoad, onSendTestEmail }) => {
 };
 
 // src/components/layout/ToolsPanel.tsx
-import { Type, Image, LayoutTemplate, MousePointerClick, Minus, Share2, Columns, RectangleHorizontal, ShoppingBag, Video, Timer, Code } from "lucide-react";
+import { Type, Image, LayoutTemplate as LayoutTemplate2, MousePointerClick, Minus, Share2, Columns, RectangleHorizontal, ShoppingBag, Video, Timer, Code } from "lucide-react";
 
 // src/components/tools/DraggableTool.tsx
 import { useDrag } from "react-dnd";
 
 // src/components/ui/card.tsx
-import * as React7 from "react";
-import { jsx as jsx7 } from "react/jsx-runtime";
-var Card = React7.forwardRef((_a, ref) => {
+import * as React10 from "react";
+import { jsx as jsx10 } from "react/jsx-runtime";
+var Card = React10.forwardRef((_a, ref) => {
   var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx10(
     "div",
     __spreadValues({
       ref,
@@ -876,9 +1360,9 @@ var Card = React7.forwardRef((_a, ref) => {
   );
 });
 Card.displayName = "Card";
-var CardHeader = React7.forwardRef((_a, ref) => {
+var CardHeader = React10.forwardRef((_a, ref) => {
   var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx10(
     "div",
     __spreadValues({
       ref,
@@ -887,9 +1371,9 @@ var CardHeader = React7.forwardRef((_a, ref) => {
   );
 });
 CardHeader.displayName = "CardHeader";
-var CardTitle = React7.forwardRef((_a, ref) => {
+var CardTitle = React10.forwardRef((_a, ref) => {
   var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx10(
     "h3",
     __spreadValues({
       ref,
@@ -898,9 +1382,9 @@ var CardTitle = React7.forwardRef((_a, ref) => {
   );
 });
 CardTitle.displayName = "CardTitle";
-var CardDescription = React7.forwardRef((_a, ref) => {
+var CardDescription = React10.forwardRef((_a, ref) => {
   var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx10(
     "p",
     __spreadValues({
       ref,
@@ -909,14 +1393,14 @@ var CardDescription = React7.forwardRef((_a, ref) => {
   );
 });
 CardDescription.displayName = "CardDescription";
-var CardContent = React7.forwardRef((_a, ref) => {
+var CardContent = React10.forwardRef((_a, ref) => {
   var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
-  return /* @__PURE__ */ jsx7("div", __spreadValues({ ref, className: cn("p-6 pt-0", className) }, props));
+  return /* @__PURE__ */ jsx10("div", __spreadValues({ ref, className: cn("p-6 pt-0", className) }, props));
 });
 CardContent.displayName = "CardContent";
-var CardFooter = React7.forwardRef((_a, ref) => {
+var CardFooter = React10.forwardRef((_a, ref) => {
   var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
-  return /* @__PURE__ */ jsx7(
+  return /* @__PURE__ */ jsx10(
     "div",
     __spreadValues({
       ref,
@@ -927,7 +1411,7 @@ var CardFooter = React7.forwardRef((_a, ref) => {
 CardFooter.displayName = "CardFooter";
 
 // src/components/tools/DraggableTool.tsx
-import { jsx as jsx8, jsxs as jsxs4 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs6 } from "react/jsx-runtime";
 var DraggableTool = ({ type, label, icon: Icon }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "ELEMENT",
@@ -936,7 +1420,7 @@ var DraggableTool = ({ type, label, icon: Icon }) => {
       isDragging: !!monitor.isDragging()
     })
   }));
-  return /* @__PURE__ */ jsxs4(
+  return /* @__PURE__ */ jsxs6(
     Card,
     {
       ref: drag,
@@ -945,71 +1429,52 @@ var DraggableTool = ({ type, label, icon: Icon }) => {
         isDragging && "opacity-50 ring-2 ring-primary rotate-2 scale-95"
       ),
       children: [
-        /* @__PURE__ */ jsx8("div", { className: "p-2 bg-muted rounded-full mb-2 group-hover:bg-primary/10 transition-colors", children: /* @__PURE__ */ jsx8(Icon, { size: 20, className: "text-muted-foreground group-hover:text-primary" }) }),
-        /* @__PURE__ */ jsx8("span", { className: "text-xs font-medium text-foreground", children: label })
+        /* @__PURE__ */ jsx11("div", { className: "p-2 bg-muted rounded-full mb-2 group-hover:bg-primary/10 transition-colors", children: /* @__PURE__ */ jsx11(Icon, { size: 20, className: "text-muted-foreground group-hover:text-primary" }) }),
+        /* @__PURE__ */ jsx11("span", { className: "text-xs font-medium text-foreground", children: label })
       ]
     }
   );
 };
 
 // src/components/layout/ToolsPanel.tsx
-import { jsx as jsx9, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
 var ToolsPanel = () => {
-  return /* @__PURE__ */ jsxs5("aside", { className: "w-[280px] flex-shrink-0 border-r bg-background/50 flex flex-col h-full overflow-y-auto", children: [
-    /* @__PURE__ */ jsxs5("div", { className: "p-6", children: [
-      /* @__PURE__ */ jsx9("h3", { className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4", children: "Components" }),
-      /* @__PURE__ */ jsxs5("div", { className: "grid grid-cols-2 gap-3", children: [
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "text", label: "Text", icon: Type }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "image", label: "Image", icon: Image }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "product", label: "Product", icon: ShoppingBag }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "button", label: "Button", icon: MousePointerClick }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "divider", label: "Divider", icon: Minus }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "social", label: "Social", icon: Share2 }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "spacer", label: "Spacer", icon: LayoutTemplate }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "video", label: "Video", icon: Video }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "countdown", label: "Timer", icon: Timer }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "html", label: "HTML", icon: Code })
+  return /* @__PURE__ */ jsxs7("aside", { className: "w-[280px] flex-shrink-0 border-r bg-background/50 flex flex-col h-full overflow-y-auto", children: [
+    /* @__PURE__ */ jsxs7("div", { className: "p-6", children: [
+      /* @__PURE__ */ jsx12("h3", { className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4", children: "Components" }),
+      /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-2 gap-3", children: [
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "text", label: "Text", icon: Type }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "image", label: "Image", icon: Image }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "product", label: "Product", icon: ShoppingBag }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "button", label: "Button", icon: MousePointerClick }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "divider", label: "Divider", icon: Minus }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "social", label: "Social", icon: Share2 }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "spacer", label: "Spacer", icon: LayoutTemplate2 }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "video", label: "Video", icon: Video }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "countdown", label: "Timer", icon: Timer }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "html", label: "HTML", icon: Code })
       ] })
     ] }),
-    /* @__PURE__ */ jsx9(Separator, {}),
-    /* @__PURE__ */ jsxs5("div", { className: "p-6 bg-muted/30 flex-1", children: [
-      /* @__PURE__ */ jsx9("h3", { className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4", children: "Layouts" }),
-      /* @__PURE__ */ jsxs5("div", { className: "grid grid-cols-2 gap-3", children: [
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "section", label: "Section", icon: RectangleHorizontal }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "columns", label: "2 Columns", icon: Columns }),
-        /* @__PURE__ */ jsx9(DraggableTool, { type: "columns-3", label: "3 Columns", icon: Columns })
+    /* @__PURE__ */ jsx12(Separator, {}),
+    /* @__PURE__ */ jsxs7("div", { className: "p-6 bg-muted/30 flex-1", children: [
+      /* @__PURE__ */ jsx12("h3", { className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4", children: "Layouts" }),
+      /* @__PURE__ */ jsxs7("div", { className: "grid grid-cols-2 gap-3", children: [
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "section", label: "Section", icon: RectangleHorizontal }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "columns", label: "2 Columns", icon: Columns }),
+        /* @__PURE__ */ jsx12(DraggableTool, { type: "columns-3", label: "3 Columns", icon: Columns })
       ] })
     ] })
   ] });
 };
 
 // src/components/layout/PropertiesPanel.tsx
-import React11 from "react";
+import React15 from "react";
 import { useDispatch as useDispatch2, useSelector as useSelector2 } from "react-redux";
-import { Sliders, Type as Type2, Palette, Layout, Link as LinkIcon, Image as ImageIcon2, AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
-
-// src/components/ui/label.tsx
-import * as React8 from "react";
-import { cva as cva2 } from "class-variance-authority";
-import { jsx as jsx10 } from "react/jsx-runtime";
-var labelVariants = cva2(
-  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-);
-var Label = React8.forwardRef((_a, ref) => {
-  var _b = _a, { className } = _b, props = __objRest(_b, ["className"]);
-  return /* @__PURE__ */ jsx10(
-    "label",
-    __spreadValues({
-      ref,
-      className: cn(labelVariants(), className)
-    }, props)
-  );
-});
-Label.displayName = "Label";
+import { Sliders, Type as Type2, Palette, Layout, Link as LinkIcon, Image as ImageIcon3, AlignLeft, AlignCenter, AlignRight, AlignJustify, Sparkles as Sparkles5 } from "lucide-react";
 
 // src/components/layout/SpacingControl.tsx
-import { useState as useState3, useEffect as useEffect3 } from "react";
-import { jsx as jsx11, jsxs as jsxs6 } from "react/jsx-runtime";
+import { useState as useState5, useEffect as useEffect4 } from "react";
+import { jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
 var SpacingControl = ({ label, value = "0px", onChange }) => {
   const parseSpacing = (val) => {
     const parts = val.replace(/px/g, "").split(" ").map((v) => parseInt(v) || 0);
@@ -1018,8 +1483,8 @@ var SpacingControl = ({ label, value = "0px", onChange }) => {
     if (parts.length === 4) return [parts[0], parts[1], parts[2], parts[3]];
     return [0, 0, 0, 0];
   };
-  const [values, setValues] = useState3(parseSpacing(value));
-  useEffect3(() => {
+  const [values, setValues] = useState5(parseSpacing(value));
+  useEffect4(() => {
     setValues(parseSpacing(value));
   }, [value]);
   const handleChange = (index, newVal) => {
@@ -1029,12 +1494,12 @@ var SpacingControl = ({ label, value = "0px", onChange }) => {
     setValues(newValues);
     onChange(`${newValues[0]}px ${newValues[1]}px ${newValues[2]}px ${newValues[3]}px`);
   };
-  return /* @__PURE__ */ jsxs6("div", { className: "grid gap-2", children: [
-    /* @__PURE__ */ jsx11(Label, { children: label }),
-    /* @__PURE__ */ jsxs6("div", { className: "grid grid-cols-2 gap-2", children: [
-      /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx11("span", { className: "text-[10px] text-muted-foreground w-4", children: "T" }),
-        /* @__PURE__ */ jsx11(
+  return /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
+    /* @__PURE__ */ jsx13(Label, { children: label }),
+    /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-2 gap-2", children: [
+      /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx13("span", { className: "text-[10px] text-muted-foreground w-4", children: "T" }),
+        /* @__PURE__ */ jsx13(
           Input,
           {
             className: "h-7 text-xs px-2",
@@ -1044,9 +1509,9 @@ var SpacingControl = ({ label, value = "0px", onChange }) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx11("span", { className: "text-[10px] text-muted-foreground w-4", children: "R" }),
-        /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx13("span", { className: "text-[10px] text-muted-foreground w-4", children: "R" }),
+        /* @__PURE__ */ jsx13(
           Input,
           {
             className: "h-7 text-xs px-2",
@@ -1056,9 +1521,9 @@ var SpacingControl = ({ label, value = "0px", onChange }) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx11("span", { className: "text-[10px] text-muted-foreground w-4", children: "B" }),
-        /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx13("span", { className: "text-[10px] text-muted-foreground w-4", children: "B" }),
+        /* @__PURE__ */ jsx13(
           Input,
           {
             className: "h-7 text-xs px-2",
@@ -1068,9 +1533,9 @@ var SpacingControl = ({ label, value = "0px", onChange }) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs6("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx11("span", { className: "text-[10px] text-muted-foreground w-4", children: "L" }),
-        /* @__PURE__ */ jsx11(
+      /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx13("span", { className: "text-[10px] text-muted-foreground w-4", children: "L" }),
+        /* @__PURE__ */ jsx13(
           Input,
           {
             className: "h-7 text-xs px-2",
@@ -1085,9 +1550,9 @@ var SpacingControl = ({ label, value = "0px", onChange }) => {
 };
 
 // src/components/ui/ImageGalleryModal.tsx
-import { useState as useState4, useEffect as useEffect4, useRef } from "react";
-import { X as X3, Upload, Loader2 as Loader23, Image as ImageIcon, Check } from "lucide-react";
-import { Fragment as Fragment2, jsx as jsx12, jsxs as jsxs7 } from "react/jsx-runtime";
+import { useState as useState6, useEffect as useEffect5, useRef } from "react";
+import { X as X5, Upload, Loader2 as Loader25, Image as ImageIcon, Check as Check2 } from "lucide-react";
+import { Fragment as Fragment2, jsx as jsx14, jsxs as jsxs9 } from "react/jsx-runtime";
 var ImageGalleryModal = ({
   isOpen,
   onClose,
@@ -1095,11 +1560,11 @@ var ImageGalleryModal = ({
   onUpload,
   fetchImages
 }) => {
-  const [images, setImages] = useState4([]);
-  const [isLoading, setIsLoading] = useState4(false);
-  const [isUploading, setIsUploading] = useState4(false);
+  const [images, setImages] = useState6([]);
+  const [isLoading, setIsLoading] = useState6(false);
+  const [isUploading, setIsUploading] = useState6(false);
   const fileInputRef = useRef(null);
-  useEffect4(() => {
+  useEffect5(() => {
     if (isOpen && fetchImages) {
       setIsLoading(true);
       fetchImages().then(setImages).catch(console.error).finally(() => setIsLoading(false));
@@ -1122,12 +1587,12 @@ var ImageGalleryModal = ({
     }
   };
   if (!isOpen) return null;
-  return /* @__PURE__ */ jsx12("div", { className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200", children: /* @__PURE__ */ jsxs7("div", { className: "bg-background w-[800px] h-[600px] rounded-xl shadow-2xl flex flex-col overflow-hidden border", children: [
-    /* @__PURE__ */ jsxs7("div", { className: "h-16 border-b px-6 flex items-center justify-between shrink-0", children: [
-      /* @__PURE__ */ jsx12("h3", { className: "font-semibold text-lg", children: "Image Gallery" }),
-      /* @__PURE__ */ jsxs7("div", { className: "flex items-center gap-2", children: [
-        onUpload && /* @__PURE__ */ jsxs7(Fragment2, { children: [
-          /* @__PURE__ */ jsx12(
+  return /* @__PURE__ */ jsx14("div", { className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200", children: /* @__PURE__ */ jsxs9("div", { className: "bg-background w-[800px] h-[600px] rounded-xl shadow-2xl flex flex-col overflow-hidden border", children: [
+    /* @__PURE__ */ jsxs9("div", { className: "h-16 border-b px-6 flex items-center justify-between shrink-0", children: [
+      /* @__PURE__ */ jsx14("h3", { className: "font-semibold text-lg", children: "Image Gallery" }),
+      /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2", children: [
+        onUpload && /* @__PURE__ */ jsxs9(Fragment2, { children: [
+          /* @__PURE__ */ jsx14(
             "input",
             {
               type: "file",
@@ -1137,7 +1602,7 @@ var ImageGalleryModal = ({
               onChange: handleFileUpload
             }
           ),
-          /* @__PURE__ */ jsxs7(
+          /* @__PURE__ */ jsxs9(
             Button,
             {
               onClick: () => {
@@ -1146,16 +1611,16 @@ var ImageGalleryModal = ({
               },
               disabled: isUploading,
               children: [
-                isUploading ? /* @__PURE__ */ jsx12(Loader23, { className: "mr-2 h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx12(Upload, { className: "mr-2 h-4 w-4" }),
+                isUploading ? /* @__PURE__ */ jsx14(Loader25, { className: "mr-2 h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx14(Upload, { className: "mr-2 h-4 w-4" }),
                 "Upload New"
               ]
             }
           )
         ] }),
-        /* @__PURE__ */ jsx12(Button, { variant: "ghost", size: "icon", onClick: onClose, children: /* @__PURE__ */ jsx12(X3, { size: 20 }) })
+        /* @__PURE__ */ jsx14(Button, { variant: "ghost", size: "icon", onClick: onClose, children: /* @__PURE__ */ jsx14(X5, { size: 20 }) })
       ] })
     ] }),
-    /* @__PURE__ */ jsx12("div", { className: "flex-1 overflow-y-auto p-6 bg-muted/10", children: isLoading ? /* @__PURE__ */ jsx12("div", { className: "flex items-center justify-center h-full", children: /* @__PURE__ */ jsx12(Loader23, { className: "h-8 w-8 animate-spin text-muted-foreground" }) }) : images.length > 0 ? /* @__PURE__ */ jsx12("div", { className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4", children: images.map((url, i) => /* @__PURE__ */ jsxs7(
+    /* @__PURE__ */ jsx14("div", { className: "flex-1 overflow-y-auto p-6 bg-muted/10", children: isLoading ? /* @__PURE__ */ jsx14("div", { className: "flex items-center justify-center h-full", children: /* @__PURE__ */ jsx14(Loader25, { className: "h-8 w-8 animate-spin text-muted-foreground" }) }) : images.length > 0 ? /* @__PURE__ */ jsx14("div", { className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4", children: images.map((url, i) => /* @__PURE__ */ jsxs9(
       "div",
       {
         className: "group relative aspect-video bg-muted rounded-lg overflow-hidden border hover:ring-2 ring-primary cursor-pointer transition-all",
@@ -1164,25 +1629,177 @@ var ImageGalleryModal = ({
           onClose();
         },
         children: [
-          /* @__PURE__ */ jsx12("img", { src: url, alt: "", className: "w-full h-full object-cover" }),
-          /* @__PURE__ */ jsx12("div", { className: "absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100", children: /* @__PURE__ */ jsx12("div", { className: "bg-white/90 p-2 rounded-full shadow-lg", children: /* @__PURE__ */ jsx12(Check, { size: 16, className: "text-primary" }) }) })
+          /* @__PURE__ */ jsx14("img", { src: url, alt: "", className: "w-full h-full object-cover" }),
+          /* @__PURE__ */ jsx14("div", { className: "absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100", children: /* @__PURE__ */ jsx14("div", { className: "bg-white/90 p-2 rounded-full shadow-lg", children: /* @__PURE__ */ jsx14(Check2, { size: 16, className: "text-primary" }) }) })
         ]
       },
       i
-    )) }) : /* @__PURE__ */ jsxs7("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground", children: [
-      /* @__PURE__ */ jsx12(ImageIcon, { size: 48, className: "mb-4 opacity-50" }),
-      /* @__PURE__ */ jsx12("p", { children: "No images found" })
+    )) }) : /* @__PURE__ */ jsxs9("div", { className: "flex flex-col items-center justify-center h-full text-muted-foreground", children: [
+      /* @__PURE__ */ jsx14(ImageIcon, { size: 48, className: "mb-4 opacity-50" }),
+      /* @__PURE__ */ jsx14("p", { children: "No images found" })
     ] }) })
   ] }) });
 };
 
+// src/components/ui/AiTextModal.tsx
+import { useState as useState7 } from "react";
+import { X as X6, Sparkles as Sparkles3, Loader2 as Loader26, Wand2 as Wand22 } from "lucide-react";
+import { jsx as jsx15, jsxs as jsxs10 } from "react/jsx-runtime";
+var AiTextModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  currentText,
+  onGenerate
+}) => {
+  const [prompt, setPrompt] = useState7("");
+  const [isLoading, setIsLoading] = useState7(false);
+  const [customMode, setCustomMode] = useState7(false);
+  const handleGenerate = async (mode) => {
+    setIsLoading(true);
+    try {
+      const result = await onGenerate(mode, currentText, prompt);
+      onSuccess(result);
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate text");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  if (!isOpen) return null;
+  return /* @__PURE__ */ jsx15("div", { className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200", children: /* @__PURE__ */ jsxs10("div", { className: "bg-background w-[500px] rounded-xl shadow-2xl flex flex-col overflow-hidden border", children: [
+    /* @__PURE__ */ jsxs10("div", { className: "h-14 border-b px-4 flex items-center justify-between bg-muted/20", children: [
+      /* @__PURE__ */ jsxs10("div", { className: "flex items-center gap-2 text-primary", children: [
+        /* @__PURE__ */ jsx15(Sparkles3, { size: 18 }),
+        /* @__PURE__ */ jsx15("h3", { className: "font-semibold", children: "AI Assistant" })
+      ] }),
+      /* @__PURE__ */ jsx15(Button, { variant: "ghost", size: "icon", onClick: onClose, className: "h-8 w-8", children: /* @__PURE__ */ jsx15(X6, { size: 18 }) })
+    ] }),
+    /* @__PURE__ */ jsxs10("div", { className: "p-6 space-y-4", children: [
+      /* @__PURE__ */ jsxs10("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx15(Label, { children: "Quick Actions" }),
+        /* @__PURE__ */ jsxs10("div", { className: "grid grid-cols-2 gap-2", children: [
+          /* @__PURE__ */ jsxs10(Button, { variant: "outline", className: "justify-start", onClick: () => handleGenerate("fix"), disabled: isLoading, children: [
+            /* @__PURE__ */ jsx15(Wand22, { size: 14, className: "mr-2" }),
+            "Fix Grammar"
+          ] }),
+          /* @__PURE__ */ jsxs10(Button, { variant: "outline", className: "justify-start", onClick: () => handleGenerate("shorten"), disabled: isLoading, children: [
+            /* @__PURE__ */ jsx15(Wand22, { size: 14, className: "mr-2" }),
+            "Shorten"
+          ] }),
+          /* @__PURE__ */ jsxs10(Button, { variant: "outline", className: "justify-start", onClick: () => handleGenerate("expand"), disabled: isLoading, children: [
+            /* @__PURE__ */ jsx15(Wand22, { size: 14, className: "mr-2" }),
+            "Expand"
+          ] }),
+          /* @__PURE__ */ jsxs10(Button, { variant: "outline", className: "justify-start", onClick: () => handleGenerate("tone"), disabled: isLoading, children: [
+            /* @__PURE__ */ jsx15(Wand22, { size: 14, className: "mr-2" }),
+            "Make Professional"
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs10("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx15("div", { className: "absolute inset-0 flex items-center", children: /* @__PURE__ */ jsx15("span", { className: "w-full border-t" }) }),
+        /* @__PURE__ */ jsx15("div", { className: "relative flex justify-center text-xs uppercase", children: /* @__PURE__ */ jsx15("span", { className: "bg-background px-2 text-muted-foreground", children: "Or custom prompt" }) })
+      ] }),
+      /* @__PURE__ */ jsxs10("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx15(Label, { children: "Custom Instruction" }),
+        /* @__PURE__ */ jsxs10("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx15(
+            Input,
+            {
+              value: prompt,
+              onChange: (e) => setPrompt(e.target.value),
+              placeholder: "e.g. 'Rewrite this to be more exciting'",
+              disabled: isLoading
+            }
+          ),
+          /* @__PURE__ */ jsx15(
+            Button,
+            {
+              onClick: () => handleGenerate("rewrite"),
+              disabled: !prompt || isLoading,
+              children: isLoading ? /* @__PURE__ */ jsx15(Loader26, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx15(Sparkles3, { className: "h-4 w-4" })
+            }
+          )
+        ] })
+      ] })
+    ] })
+  ] }) });
+};
+
+// src/components/ui/AiImageModal.tsx
+import { useState as useState8 } from "react";
+import { X as X7, Sparkles as Sparkles4, Loader2 as Loader27, Image as ImageIcon2 } from "lucide-react";
+import { jsx as jsx16, jsxs as jsxs11 } from "react/jsx-runtime";
+var AiImageModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  onGenerate
+}) => {
+  const [prompt, setPrompt] = useState8("");
+  const [isLoading, setIsLoading] = useState8(false);
+  const handleGenerate = async () => {
+    if (!prompt) return;
+    setIsLoading(true);
+    try {
+      const result = await onGenerate(prompt);
+      onSuccess(result);
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate image");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  if (!isOpen) return null;
+  return /* @__PURE__ */ jsx16("div", { className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200", children: /* @__PURE__ */ jsxs11("div", { className: "bg-background w-[500px] rounded-xl shadow-2xl flex flex-col overflow-hidden border", children: [
+    /* @__PURE__ */ jsxs11("div", { className: "h-14 border-b px-4 flex items-center justify-between bg-muted/20", children: [
+      /* @__PURE__ */ jsxs11("div", { className: "flex items-center gap-2 text-primary", children: [
+        /* @__PURE__ */ jsx16(Sparkles4, { size: 18 }),
+        /* @__PURE__ */ jsx16("h3", { className: "font-semibold", children: "AI Image Generator" })
+      ] }),
+      /* @__PURE__ */ jsx16(Button, { variant: "ghost", size: "icon", onClick: onClose, className: "h-8 w-8", children: /* @__PURE__ */ jsx16(X7, { size: 18 }) })
+    ] }),
+    /* @__PURE__ */ jsxs11("div", { className: "p-6 space-y-4", children: [
+      /* @__PURE__ */ jsxs11("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx16(Label, { children: "Describe the image" }),
+        /* @__PURE__ */ jsx16("div", { className: "flex gap-2", children: /* @__PURE__ */ jsx16(
+          Input,
+          {
+            value: prompt,
+            onChange: (e) => setPrompt(e.target.value),
+            placeholder: "e.g. 'A futuristic city skyline at sunset'",
+            disabled: isLoading,
+            onKeyDown: (e) => e.key === "Enter" && handleGenerate()
+          }
+        ) })
+      ] }),
+      /* @__PURE__ */ jsxs11("div", { className: "flex justify-end gap-2", children: [
+        /* @__PURE__ */ jsx16(Button, { variant: "outline", onClick: onClose, disabled: isLoading, children: "Cancel" }),
+        /* @__PURE__ */ jsxs11(Button, { onClick: handleGenerate, disabled: !prompt || isLoading, children: [
+          isLoading ? /* @__PURE__ */ jsx16(Loader27, { className: "mr-2 h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx16(Sparkles4, { className: "mr-2 h-4 w-4" }),
+          "Generate"
+        ] })
+      ] }),
+      isLoading && /* @__PURE__ */ jsxs11("div", { className: "flex flex-col items-center justify-center py-6 text-muted-foreground animate-pulse", children: [
+        /* @__PURE__ */ jsx16(ImageIcon2, { size: 32, className: "mb-2" }),
+        /* @__PURE__ */ jsx16("p", { className: "text-sm", children: "Creating your masterpiece..." })
+      ] })
+    ] })
+  ] }) });
+};
+
 // src/components/layout/PropertiesPanel.tsx
-import { jsx as jsx13, jsxs as jsxs8 } from "react/jsx-runtime";
-var ImageInput = ({ label, value, onChange, onPickImage }) => {
-  return /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-    /* @__PURE__ */ jsx13(Label, { children: label }),
-    /* @__PURE__ */ jsxs8("div", { className: "flex gap-2 items-center", children: [
-      /* @__PURE__ */ jsx13(
+import { jsx as jsx17, jsxs as jsxs12 } from "react/jsx-runtime";
+var ImageInput = ({ label, value, onChange, onPickImage, onGenerateImage }) => {
+  return /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+    /* @__PURE__ */ jsx17(Label, { children: label }),
+    /* @__PURE__ */ jsxs12("div", { className: "flex gap-2 items-center", children: [
+      /* @__PURE__ */ jsx17(
         Input,
         {
           value: value || "",
@@ -1191,24 +1808,37 @@ var ImageInput = ({ label, value, onChange, onPickImage }) => {
           className: "flex-1"
         }
       ),
-      onPickImage && /* @__PURE__ */ jsx13(
+      onGenerateImage && /* @__PURE__ */ jsx17(
+        Button,
+        {
+          variant: "ghost",
+          size: "icon",
+          onClick: onGenerateImage,
+          title: "Generate with AI",
+          className: "text-purple-600 hover:text-purple-700 hover:bg-purple-50",
+          children: /* @__PURE__ */ jsx17(Sparkles5, { size: 16 })
+        }
+      ),
+      onPickImage && /* @__PURE__ */ jsx17(
         Button,
         {
           variant: "secondary",
           size: "icon",
           onClick: onPickImage,
           title: "Select Image",
-          children: /* @__PURE__ */ jsx13(ImageIcon2, { size: 16 })
+          children: /* @__PURE__ */ jsx17(ImageIcon3, { size: 16 })
         }
       )
     ] })
   ] });
 };
-var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
+var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags, aiFeatures }) => {
   var _a, _b;
   const dispatch = useDispatch2();
   const { elements, selectedElementId, canvasSettings } = useSelector2((state) => state.editor);
-  const [galleryCallback, setGalleryCallback] = React11.useState(null);
+  const [galleryCallback, setGalleryCallback] = React15.useState(null);
+  const [aiTextCallback, setAiTextCallback] = React15.useState(null);
+  const [aiImageCallback, setAiImageCallback] = React15.useState(null);
   const openGallery = (onChange) => {
     setGalleryCallback(() => onChange);
   };
@@ -1250,23 +1880,23 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
   const handleGlobalChange = (key, value) => {
     dispatch(updateCanvasSettings({ [key]: value }));
   };
-  const PropertySection = ({ title, icon: Icon, children }) => /* @__PURE__ */ jsxs8("div", { className: "border-b last:border-0 border-border", children: [
-    /* @__PURE__ */ jsxs8("div", { className: "px-6 py-4 flex items-center gap-2 bg-muted/20", children: [
-      Icon && /* @__PURE__ */ jsx13(Icon, { size: 14, className: "text-muted-foreground" }),
-      /* @__PURE__ */ jsx13("span", { className: "text-xs font-medium text-foreground uppercase tracking-widest", children: title })
+  const PropertySection = ({ title, icon: Icon, children }) => /* @__PURE__ */ jsxs12("div", { className: "border-b last:border-0 border-border", children: [
+    /* @__PURE__ */ jsxs12("div", { className: "px-6 py-4 flex items-center gap-2 bg-muted/20", children: [
+      Icon && /* @__PURE__ */ jsx17(Icon, { size: 14, className: "text-muted-foreground" }),
+      /* @__PURE__ */ jsx17("span", { className: "text-xs font-medium text-foreground uppercase tracking-widest", children: title })
     ] }),
-    /* @__PURE__ */ jsx13("div", { className: "p-6 space-y-4", children })
+    /* @__PURE__ */ jsx17("div", { className: "p-6 space-y-4", children })
   ] });
   if (!selectedElement) {
-    return /* @__PURE__ */ jsxs8("aside", { className: "w-[320px] flex-shrink-0 border-l bg-background flex flex-col h-full overflow-y-auto", children: [
-      /* @__PURE__ */ jsxs8("div", { className: "p-6 border-b flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx13(Sliders, { size: 18 }),
-        /* @__PURE__ */ jsx13("h2", { className: "font-semibold text-lg", children: "Settings" })
+    return /* @__PURE__ */ jsxs12("aside", { className: "w-[320px] flex-shrink-0 border-l bg-background flex flex-col h-full overflow-y-auto", children: [
+      /* @__PURE__ */ jsxs12("div", { className: "p-6 border-b flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx17(Sliders, { size: 18 }),
+        /* @__PURE__ */ jsx17("h2", { className: "font-semibold text-lg", children: "Settings" })
       ] }),
-      /* @__PURE__ */ jsx13(PropertySection, { title: "Canvas Dimensions", icon: Layout, children: /* @__PURE__ */ jsxs8("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Width (px)" }),
-          /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsx17(PropertySection, { title: "Canvas Dimensions", icon: Layout, children: /* @__PURE__ */ jsxs12("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Width (px)" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               type: "number",
@@ -1275,12 +1905,12 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsx13("p", { className: "text-[0.8rem] text-muted-foreground", children: "Standard email width is 600px." })
+        /* @__PURE__ */ jsx17("p", { className: "text-[0.8rem] text-muted-foreground", children: "Standard email width is 600px." })
       ] }) }),
-      /* @__PURE__ */ jsx13(PropertySection, { title: "Background", icon: Palette, children: /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "Color" }),
-        /* @__PURE__ */ jsxs8("div", { className: "flex gap-2", children: [
-          /* @__PURE__ */ jsx13("div", { className: "relative w-10 h-10 rounded-md border overflow-hidden shadow-sm shrink-0", children: /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsx17(PropertySection, { title: "Background", icon: Palette, children: /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "Color" }),
+        /* @__PURE__ */ jsxs12("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx17("div", { className: "relative w-10 h-10 rounded-md border overflow-hidden shadow-sm shrink-0", children: /* @__PURE__ */ jsx17(
             "input",
             {
               type: "color",
@@ -1289,7 +1919,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
               className: "absolute -top-2 -left-2 w-16 h-16 p-0 border-0 cursor-pointer"
             }
           ) }),
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx17(
             Input,
             {
               type: "text",
@@ -1300,39 +1930,39 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           )
         ] })
       ] }) }),
-      /* @__PURE__ */ jsx13(PropertySection, { title: "Global Styles", icon: Type2, children: /* @__PURE__ */ jsxs8("div", { className: "grid gap-4", children: [
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Font Family" }),
-          /* @__PURE__ */ jsxs8(
+      /* @__PURE__ */ jsx17(PropertySection, { title: "Global Styles", icon: Type2, children: /* @__PURE__ */ jsxs12("div", { className: "grid gap-4", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Font Family" }),
+          /* @__PURE__ */ jsxs12(
             "select",
             {
               className: "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
               value: canvasSettings.fontFamily,
               onChange: (e) => handleGlobalChange("fontFamily", e.target.value),
               children: [
-                /* @__PURE__ */ jsxs8("optgroup", { label: "Sans Serif", children: [
-                  /* @__PURE__ */ jsx13("option", { value: "Arial, sans-serif", children: "Arial" }),
-                  /* @__PURE__ */ jsx13("option", { value: "'Helvetica Neue', Helvetica, sans-serif", children: "Helvetica" }),
-                  /* @__PURE__ */ jsx13("option", { value: "'Open Sans', sans-serif", children: "Open Sans" }),
-                  /* @__PURE__ */ jsx13("option", { value: "'Roboto', sans-serif", children: "Roboto" }),
-                  /* @__PURE__ */ jsx13("option", { value: "Verdana, sans-serif", children: "Verdana" })
+                /* @__PURE__ */ jsxs12("optgroup", { label: "Sans Serif", children: [
+                  /* @__PURE__ */ jsx17("option", { value: "Arial, sans-serif", children: "Arial" }),
+                  /* @__PURE__ */ jsx17("option", { value: "'Helvetica Neue', Helvetica, sans-serif", children: "Helvetica" }),
+                  /* @__PURE__ */ jsx17("option", { value: "'Open Sans', sans-serif", children: "Open Sans" }),
+                  /* @__PURE__ */ jsx17("option", { value: "'Roboto', sans-serif", children: "Roboto" }),
+                  /* @__PURE__ */ jsx17("option", { value: "Verdana, sans-serif", children: "Verdana" })
                 ] }),
-                /* @__PURE__ */ jsxs8("optgroup", { label: "Serif", children: [
-                  /* @__PURE__ */ jsx13("option", { value: "'Times New Roman', Times, serif", children: "Times New Roman" }),
-                  /* @__PURE__ */ jsx13("option", { value: "Georgia, serif", children: "Georgia" }),
-                  /* @__PURE__ */ jsx13("option", { value: "'Merriweather', serif", children: "Merriweather" }),
-                  /* @__PURE__ */ jsx13("option", { value: "'Playfair Display', serif", children: "Playfair Display" })
+                /* @__PURE__ */ jsxs12("optgroup", { label: "Serif", children: [
+                  /* @__PURE__ */ jsx17("option", { value: "'Times New Roman', Times, serif", children: "Times New Roman" }),
+                  /* @__PURE__ */ jsx17("option", { value: "Georgia, serif", children: "Georgia" }),
+                  /* @__PURE__ */ jsx17("option", { value: "'Merriweather', serif", children: "Merriweather" }),
+                  /* @__PURE__ */ jsx17("option", { value: "'Playfair Display', serif", children: "Playfair Display" })
                 ] }),
-                /* @__PURE__ */ jsx13("optgroup", { label: "Monospace", children: /* @__PURE__ */ jsx13("option", { value: "'Courier New', Courier, monospace", children: "Courier New" }) })
+                /* @__PURE__ */ jsx17("optgroup", { label: "Monospace", children: /* @__PURE__ */ jsx17("option", { value: "'Courier New', Courier, monospace", children: "Courier New" }) })
               ]
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-            /* @__PURE__ */ jsx13(Label, { children: "Text Color" }),
-            /* @__PURE__ */ jsxs8("div", { className: "flex gap-2", children: [
-              /* @__PURE__ */ jsx13("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+            /* @__PURE__ */ jsx17(Label, { children: "Text Color" }),
+            /* @__PURE__ */ jsxs12("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsx17("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx17(
                 "input",
                 {
                   type: "color",
@@ -1341,7 +1971,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
                   className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
                 }
               ) }),
-              /* @__PURE__ */ jsx13(
+              /* @__PURE__ */ jsx17(
                 Input,
                 {
                   value: canvasSettings.textColor || "#000000",
@@ -1351,10 +1981,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
               )
             ] })
           ] }),
-          /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-            /* @__PURE__ */ jsx13(Label, { children: "Link Color" }),
-            /* @__PURE__ */ jsxs8("div", { className: "flex gap-2", children: [
-              /* @__PURE__ */ jsx13("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+            /* @__PURE__ */ jsx17(Label, { children: "Link Color" }),
+            /* @__PURE__ */ jsxs12("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsx17("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx17(
                 "input",
                 {
                   type: "color",
@@ -1363,7 +1993,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
                   className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
                 }
               ) }),
-              /* @__PURE__ */ jsx13(
+              /* @__PURE__ */ jsx17(
                 Input,
                 {
                   value: canvasSettings.linkColor || "#007bff",
@@ -1374,10 +2004,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Line Height" }),
-          /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-4", children: [
-            /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Line Height" }),
+          /* @__PURE__ */ jsxs12("div", { className: "flex items-center gap-4", children: [
+            /* @__PURE__ */ jsx17(
               Input,
               {
                 type: "number",
@@ -1388,7 +2018,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
                 onChange: (e) => handleGlobalChange("lineHeight", e.target.value)
               }
             ),
-            /* @__PURE__ */ jsxs8("span", { className: "text-xs text-muted-foreground w-12 text-right", children: [
+            /* @__PURE__ */ jsxs12("span", { className: "text-xs text-muted-foreground w-12 text-right", children: [
               canvasSettings.lineHeight || 1.5,
               "em"
             ] })
@@ -1397,16 +2027,31 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
       ] }) })
     ] });
   }
-  return /* @__PURE__ */ jsxs8("aside", { className: "w-[320px] flex-shrink-0 border-l bg-background flex flex-col h-full overflow-y-auto", children: [
-    /* @__PURE__ */ jsxs8("div", { className: "p-6 border-b flex items-center justify-between bg-muted/10", children: [
-      /* @__PURE__ */ jsx13("h2", { className: "font-semibold text-lg capitalize", children: selectedElement.type }),
-      /* @__PURE__ */ jsx13("span", { className: "text-xs text-muted-foreground font-mono bg-muted px-2 py-1 rounded", children: selectedElement.id.slice(0, 4) })
+  return /* @__PURE__ */ jsxs12("aside", { className: "w-[320px] flex-shrink-0 border-l bg-background flex flex-col h-full overflow-y-auto", children: [
+    /* @__PURE__ */ jsxs12("div", { className: "p-6 border-b flex items-center justify-between bg-muted/10", children: [
+      /* @__PURE__ */ jsx17("h2", { className: "font-semibold text-lg capitalize", children: selectedElement.type }),
+      /* @__PURE__ */ jsx17("span", { className: "text-xs text-muted-foreground font-mono bg-muted px-2 py-1 rounded", children: selectedElement.id.slice(0, 4) })
     ] }),
-    /* @__PURE__ */ jsxs8(PropertySection, { title: "Content", icon: Type2, children: [
-      selectedElement.type === "text" && /* @__PURE__ */ jsxs8("div", { className: "grid gap-4", children: [
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Text Content" }),
-          /* @__PURE__ */ jsx13(
+    /* @__PURE__ */ jsxs12(PropertySection, { title: "Content", icon: Type2, children: [
+      selectedElement.type === "text" && /* @__PURE__ */ jsxs12("div", { className: "grid gap-4", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsxs12("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsx17(Label, { children: "Text Content" }),
+            (aiFeatures == null ? void 0 : aiFeatures.onTextConnect) && /* @__PURE__ */ jsxs12(
+              Button,
+              {
+                variant: "ghost",
+                size: "sm",
+                className: "h-6 px-2 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50",
+                onClick: () => setAiTextCallback(() => (newText) => handleContentChange("text", newText)),
+                children: [
+                  /* @__PURE__ */ jsx17(Sparkles5, { size: 12, className: "mr-1" }),
+                  "AI Magic"
+                ]
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsx17(
             "textarea",
             {
               value: selectedElement.content.text || "",
@@ -1415,9 +2060,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { className: "text-xs", children: "Insert Variable" }),
-          /* @__PURE__ */ jsxs8(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { className: "text-xs", children: "Insert Variable" }),
+          /* @__PURE__ */ jsxs12(
             "select",
             {
               className: "h-8 w-full rounded-md border border-input bg-transparent px-2 text-xs",
@@ -1427,7 +2072,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
                 e.target.value = "";
               },
               children: [
-                /* @__PURE__ */ jsx13("option", { value: "", children: "Select variable..." }),
+                /* @__PURE__ */ jsx17("option", { value: "", children: "Select variable..." }),
                 (mergeTags || [
                   { value: "{{ first_name }}", label: "First Name" },
                   { value: "{{ last_name }}", label: "Last Name" },
@@ -1435,16 +2080,16 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
                   { value: "{{ unsubscribe_url }}", label: "Unsubscribe Link" },
                   { value: "{{ current_year }}", label: "Current Year" },
                   { value: "{{ company_name }}", label: "Company Name" }
-                ]).map((tag) => /* @__PURE__ */ jsx13("option", { value: tag.value, children: tag.label }, tag.value))
+                ]).map((tag) => /* @__PURE__ */ jsx17("option", { value: tag.value, children: tag.label }, tag.value))
               ]
             }
           )
         ] })
       ] }),
-      selectedElement.type === "button" && /* @__PURE__ */ jsxs8("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Button Label" }),
-          /* @__PURE__ */ jsx13(
+      selectedElement.type === "button" && /* @__PURE__ */ jsxs12("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Button Label" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               type: "text",
@@ -1453,11 +2098,11 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Link URL" }),
-          /* @__PURE__ */ jsxs8("div", { className: "relative", children: [
-            /* @__PURE__ */ jsx13(LinkIcon, { size: 14, className: "absolute left-3 top-2.5 text-muted-foreground" }),
-            /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Link URL" }),
+          /* @__PURE__ */ jsxs12("div", { className: "relative", children: [
+            /* @__PURE__ */ jsx17(LinkIcon, { size: 14, className: "absolute left-3 top-2.5 text-muted-foreground" }),
+            /* @__PURE__ */ jsx17(
               Input,
               {
                 type: "text",
@@ -1469,11 +2114,11 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           ] })
         ] })
       ] }),
-      selectedElement.type === "social" && selectedElement.content.socialLinks && /* @__PURE__ */ jsxs8("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "Social Networks" }),
-        selectedElement.content.socialLinks.map((link, index) => /* @__PURE__ */ jsxs8("div", { className: "grid gap-2 border p-3 rounded-md bg-muted/20", children: [
-          /* @__PURE__ */ jsx13("span", { className: "text-xs font-semibold capitalize", children: link.network }),
-          /* @__PURE__ */ jsx13(
+      selectedElement.type === "social" && selectedElement.content.socialLinks && /* @__PURE__ */ jsxs12("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "Social Networks" }),
+        selectedElement.content.socialLinks.map((link, index) => /* @__PURE__ */ jsxs12("div", { className: "grid gap-2 border p-3 rounded-md bg-muted/20", children: [
+          /* @__PURE__ */ jsx17("span", { className: "text-xs font-semibold capitalize", children: link.network }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               value: link.url,
@@ -1488,10 +2133,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           )
         ] }, index))
       ] }),
-      selectedElement.type === "product" && /* @__PURE__ */ jsxs8("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Product Title" }),
-          /* @__PURE__ */ jsx13(
+      selectedElement.type === "product" && /* @__PURE__ */ jsxs12("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Product Title" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               value: selectedElement.content.text || "",
@@ -1499,10 +2144,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-            /* @__PURE__ */ jsx13(Label, { children: "Price" }),
-            /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+            /* @__PURE__ */ jsx17(Label, { children: "Price" }),
+            /* @__PURE__ */ jsx17(
               Input,
               {
                 value: selectedElement.content.price || "",
@@ -1510,9 +2155,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-            /* @__PURE__ */ jsx13(Label, { children: "Currency" }),
-            /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+            /* @__PURE__ */ jsx17(Label, { children: "Currency" }),
+            /* @__PURE__ */ jsx17(
               Input,
               {
                 value: selectedElement.content.currency || "$",
@@ -1521,18 +2166,19 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             )
           ] })
         ] }),
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx17(
           ImageInput,
           {
             label: "Image URL",
             value: selectedElement.content.imageUrl || "",
             onChange: (val) => handleContentChange("imageUrl", val),
-            onPickImage: () => openGallery((val) => handleContentChange("imageUrl", val))
+            onPickImage: () => openGallery((val) => handleContentChange("imageUrl", val)),
+            onGenerateImage: (aiFeatures == null ? void 0 : aiFeatures.onImageConnect) ? () => setAiImageCallback(() => (url) => handleContentChange("imageUrl", url)) : void 0
           }
         ),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Button Label" }),
-          /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Button Label" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               value: selectedElement.content.label || "",
@@ -1540,9 +2186,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Product URL" }),
-          /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Product URL" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               value: selectedElement.content.url || "",
@@ -1551,17 +2197,18 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           )
         ] })
       ] }),
-      selectedElement.type === "image" && /* @__PURE__ */ jsxs8("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsx13(
+      selectedElement.type === "image" && /* @__PURE__ */ jsxs12("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsx17(
           ImageInput,
           {
             label: "Image Source",
             value: selectedElement.content.url || "",
             onChange: (val) => handleContentChange("url", val),
-            onPickImage: () => openGallery((val) => handleContentChange("url", val))
+            onPickImage: () => openGallery((val) => handleContentChange("url", val)),
+            onGenerateImage: (aiFeatures == null ? void 0 : aiFeatures.onImageConnect) ? () => setAiImageCallback(() => (url) => handleContentChange("url", url)) : void 0
           }
         ),
-        /* @__PURE__ */ jsx13("div", { className: "rounded-lg border bg-muted/20 p-4 flex items-center justify-center min-h-[120px]", children: /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx17("div", { className: "rounded-lg border bg-muted/20 p-4 flex items-center justify-center min-h-[120px]", children: /* @__PURE__ */ jsx17(
           "img",
           {
             src: selectedElement.content.url,
@@ -1572,9 +2219,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             }
           }
         ) }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Alt Text" }),
-          /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Alt Text" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               value: selectedElement.content.alt || "",
@@ -1584,10 +2231,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           )
         ] })
       ] }),
-      selectedElement.type === "video" && /* @__PURE__ */ jsxs8("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Video URL (YouTube/Vimeo)" }),
-          /* @__PURE__ */ jsx13(
+      selectedElement.type === "video" && /* @__PURE__ */ jsxs12("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Video URL (YouTube/Vimeo)" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               value: selectedElement.content.url || "",
@@ -1596,7 +2243,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsx17(
           ImageInput,
           {
             label: "Thumbnail URL (Optional)",
@@ -1605,9 +2252,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             onPickImage: () => openGallery((val) => handleContentChange("thumbnailUrl", val))
           }
         ),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Alt Text" }),
-          /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Alt Text" }),
+          /* @__PURE__ */ jsx17(
             Input,
             {
               value: selectedElement.content.alt || "",
@@ -1616,9 +2263,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           )
         ] })
       ] }),
-      selectedElement.type === "countdown" && /* @__PURE__ */ jsx13("div", { className: "space-y-4", children: /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "End Date & Time" }),
-        /* @__PURE__ */ jsx13(
+      selectedElement.type === "countdown" && /* @__PURE__ */ jsx17("div", { className: "space-y-4", children: /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "End Date & Time" }),
+        /* @__PURE__ */ jsx17(
           Input,
           {
             type: "datetime-local",
@@ -1627,9 +2274,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           }
         )
       ] }) }),
-      selectedElement.type === "html" && /* @__PURE__ */ jsx13("div", { className: "space-y-4", children: /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "HTML Code" }),
-        /* @__PURE__ */ jsx13(
+      selectedElement.type === "html" && /* @__PURE__ */ jsx17("div", { className: "space-y-4", children: /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "HTML Code" }),
+        /* @__PURE__ */ jsx17(
           "textarea",
           {
             className: "flex min-h-[200px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 font-mono",
@@ -1638,11 +2285,11 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             placeholder: "<div>Your custom HTML here</div>"
           }
         ),
-        /* @__PURE__ */ jsx13("p", { className: "text-xs text-muted-foreground", children: "Warning: Invalid HTML may break the layout." })
+        /* @__PURE__ */ jsx17("p", { className: "text-xs text-muted-foreground", children: "Warning: Invalid HTML may break the layout." })
       ] }) }),
-      selectedElement.type === "spacer" && /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "Height" }),
-        /* @__PURE__ */ jsx13(
+      selectedElement.type === "spacer" && /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "Height" }),
+        /* @__PURE__ */ jsx17(
           Input,
           {
             type: "text",
@@ -1652,10 +2299,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           }
         )
       ] }),
-      selectedElement.type === "divider" && /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "Divider Color" }),
-        /* @__PURE__ */ jsxs8("div", { className: "flex gap-2", children: [
-          /* @__PURE__ */ jsx13("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx13(
+      selectedElement.type === "divider" && /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "Divider Color" }),
+        /* @__PURE__ */ jsxs12("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx17("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx17(
             "input",
             {
               type: "color",
@@ -1664,7 +2311,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
               className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
             }
           ) }),
-          /* @__PURE__ */ jsx13(
+          /* @__PURE__ */ jsx17(
             Input,
             {
               type: "text",
@@ -1677,10 +2324,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs8(PropertySection, { title: isMobile ? "Appearance (Mobile)" : "Appearance", icon: Palette, children: [
-      selectedElement.type === "section" && /* @__PURE__ */ jsxs8("div", { className: "grid gap-2 mb-4", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "Background Image URL" }),
-        /* @__PURE__ */ jsx13(
+    /* @__PURE__ */ jsxs12(PropertySection, { title: isMobile ? "Appearance (Mobile)" : "Appearance", icon: Palette, children: [
+      selectedElement.type === "section" && /* @__PURE__ */ jsxs12("div", { className: "grid gap-2 mb-4", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "Background Image URL" }),
+        /* @__PURE__ */ jsx17(
           Input,
           {
             value: ((_b = getStyleValue("backgroundImage")) == null ? void 0 : _b.replace(/^url\(['"](.+)['"]\)$/, "$1")) || "",
@@ -1689,11 +2336,11 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs8("div", { className: "grid grid-cols-2 gap-4", children: [
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Background Color" }),
-          /* @__PURE__ */ jsxs8("div", { className: "flex gap-2", children: [
-            /* @__PURE__ */ jsx13("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsxs12("div", { className: "grid grid-cols-2 gap-4", children: [
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Background Color" }),
+          /* @__PURE__ */ jsxs12("div", { className: "flex gap-2", children: [
+            /* @__PURE__ */ jsx17("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx17(
               "input",
               {
                 type: "color",
@@ -1702,7 +2349,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
                 className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
               }
             ) }),
-            /* @__PURE__ */ jsx13(
+            /* @__PURE__ */ jsx17(
               Input,
               {
                 value: getStyleValue("backgroundColor", "#ffffff"),
@@ -1712,10 +2359,10 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             )
           ] })
         ] }),
-        /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx13(Label, { children: "Text Color" }),
-          /* @__PURE__ */ jsxs8("div", { className: "flex gap-2", children: [
-            /* @__PURE__ */ jsx13("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx13(
+        /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx17(Label, { children: "Text Color" }),
+          /* @__PURE__ */ jsxs12("div", { className: "flex gap-2", children: [
+            /* @__PURE__ */ jsx17("div", { className: "relative w-8 h-8 rounded border overflow-hidden shrink-0", children: /* @__PURE__ */ jsx17(
               "input",
               {
                 type: "color",
@@ -1724,7 +2371,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
                 className: "absolute -top-4 -left-4 w-16 h-16 cursor-pointer"
               }
             ) }),
-            /* @__PURE__ */ jsx13(
+            /* @__PURE__ */ jsx17(
               Input,
               {
                 value: getStyleValue("color", "#000000"),
@@ -1735,8 +2382,8 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx13(Separator, {}),
-      /* @__PURE__ */ jsx13(
+      /* @__PURE__ */ jsx17(Separator, {}),
+      /* @__PURE__ */ jsx17(
         SpacingControl,
         {
           label: "Padding",
@@ -1744,9 +2391,9 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
           onChange: (val) => handleStyleChange("padding", val)
         }
       ),
-      /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "Alignment" }),
-        /* @__PURE__ */ jsx13("div", { className: "flex bg-muted rounded-md p-1", children: ["left", "center", "right", "justify"].map((align) => /* @__PURE__ */ jsxs8(
+      /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "Alignment" }),
+        /* @__PURE__ */ jsx17("div", { className: "flex bg-muted rounded-md p-1", children: ["left", "center", "right", "justify"].map((align) => /* @__PURE__ */ jsxs12(
           "button",
           {
             onClick: () => handleStyleChange("textAlign", align),
@@ -1756,18 +2403,18 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
             ),
             title: align.charAt(0).toUpperCase() + align.slice(1),
             children: [
-              align === "left" && /* @__PURE__ */ jsx13(AlignLeft, { size: 16 }),
-              align === "center" && /* @__PURE__ */ jsx13(AlignCenter, { size: 16 }),
-              align === "right" && /* @__PURE__ */ jsx13(AlignRight, { size: 16 }),
-              align === "justify" && /* @__PURE__ */ jsx13(AlignJustify, { size: 16 })
+              align === "left" && /* @__PURE__ */ jsx17(AlignLeft, { size: 16 }),
+              align === "center" && /* @__PURE__ */ jsx17(AlignCenter, { size: 16 }),
+              align === "right" && /* @__PURE__ */ jsx17(AlignRight, { size: 16 }),
+              align === "justify" && /* @__PURE__ */ jsx17(AlignJustify, { size: 16 })
             ]
           },
           align
         )) })
       ] }),
-      selectedElement.type === "button" && /* @__PURE__ */ jsxs8("div", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx13(Label, { children: "Border Radius" }),
-        /* @__PURE__ */ jsx13(
+      selectedElement.type === "button" && /* @__PURE__ */ jsxs12("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx17(Label, { children: "Border Radius" }),
+        /* @__PURE__ */ jsx17(
           Input,
           {
             type: "text",
@@ -1778,7 +2425,7 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsx13(
+    /* @__PURE__ */ jsx17(
       ImageGalleryModal,
       {
         isOpen: !!galleryCallback,
@@ -1789,6 +2436,29 @@ var PropertiesPanel = ({ onUploadImage, onFetchImages, mergeTags }) => {
         onUpload: onUploadImage,
         fetchImages: onFetchImages
       }
+    ),
+    (aiFeatures == null ? void 0 : aiFeatures.onTextConnect) && /* @__PURE__ */ jsx17(
+      AiTextModal,
+      {
+        isOpen: !!aiTextCallback,
+        onClose: () => setAiTextCallback(null),
+        onSuccess: (text) => {
+          if (aiTextCallback) aiTextCallback(text);
+        },
+        currentText: (selectedElement == null ? void 0 : selectedElement.content.text) || "",
+        onGenerate: aiFeatures.onTextConnect
+      }
+    ),
+    (aiFeatures == null ? void 0 : aiFeatures.onImageConnect) && /* @__PURE__ */ jsx17(
+      AiImageModal,
+      {
+        isOpen: !!aiImageCallback,
+        onClose: () => setAiImageCallback(null),
+        onSuccess: (url) => {
+          if (aiImageCallback) aiImageCallback(url);
+        },
+        onGenerate: aiFeatures.onImageConnect
+      }
     )
   ] });
 };
@@ -1798,7 +2468,7 @@ import { useDrop as useDrop3 } from "react-dnd";
 import { useDispatch as useDispatch5, useSelector as useSelector4 } from "react-redux";
 
 // src/components/editor/CanvasElement.tsx
-import { useState as useState5, useEffect as useEffect5, useRef as useRef2 } from "react";
+import { useState as useState9, useEffect as useEffect6, useRef as useRef2 } from "react";
 import { useDrag as useDrag2, useDrop as useDrop2 } from "react-dnd";
 import { useDispatch as useDispatch4, useSelector as useSelector3 } from "react-redux";
 import { Trash2, Facebook, Twitter, Instagram, Linkedin, Share2 as Share22 } from "lucide-react";
@@ -1806,7 +2476,7 @@ import { Trash2, Facebook, Twitter, Instagram, Linkedin, Share2 as Share22 } fro
 // src/components/editor/ColumnDropZone.tsx
 import { useDrop } from "react-dnd";
 import { useDispatch as useDispatch3 } from "react-redux";
-import { jsx as jsx14 } from "react/jsx-runtime";
+import { jsx as jsx18 } from "react/jsx-runtime";
 var ColumnDropZone = ({ parentId, columnId, elements }) => {
   const dispatch = useDispatch3();
   const [{ isOver, canDrop }, drop] = useDrop(() => ({
@@ -1823,7 +2493,7 @@ var ColumnDropZone = ({ parentId, columnId, elements }) => {
       canDrop: !!monitor.canDrop()
     })
   }));
-  return /* @__PURE__ */ jsx14(
+  return /* @__PURE__ */ jsx18(
     "div",
     {
       ref: drop,
@@ -1831,16 +2501,16 @@ var ColumnDropZone = ({ parentId, columnId, elements }) => {
                 ${isOver ? "bg-indigo-50 border-2 border-indigo-300 border-dashed ring-2 ring-indigo-200" : "bg-transparent border border-dashed border-gray-200"}
                 ${elements.length === 0 ? "items-center justify-center" : ""}
             `,
-      children: elements.length === 0 ? /* @__PURE__ */ jsx14("div", { className: "text-xs text-muted-foreground pointer-events-none", children: "Drop here" }) : elements.map((el, index) => (
+      children: elements.length === 0 ? /* @__PURE__ */ jsx18("div", { className: "text-xs text-muted-foreground pointer-events-none", children: "Drop here" }) : elements.map((el, index) => (
         // Note: We might need to pass context that this is nested if we want nested sorting later
-        /* @__PURE__ */ jsx14(CanvasElement, { element: el, index }, el.id)
+        /* @__PURE__ */ jsx18(CanvasElement, { element: el, index }, el.id)
       ))
     }
   );
 };
 
 // src/components/editor/CanvasElement.tsx
-import { jsx as jsx15, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx19, jsxs as jsxs13 } from "react/jsx-runtime";
 var EditableText = ({
   initialText,
   onChange,
@@ -1849,14 +2519,14 @@ var EditableText = ({
   onToggleEdit
 }) => {
   const ref = useRef2(null);
-  useEffect5(() => {
+  useEffect6(() => {
     if (ref.current) {
       if (document.activeElement !== ref.current && ref.current.innerText !== initialText) {
         ref.current.innerText = initialText;
       }
     }
   }, [initialText]);
-  useEffect5(() => {
+  useEffect6(() => {
     if (isEditing && ref.current) {
       ref.current.focus();
     }
@@ -1865,7 +2535,7 @@ var EditableText = ({
     const text = e.currentTarget.innerText;
     onChange(text);
   };
-  return /* @__PURE__ */ jsx15(
+  return /* @__PURE__ */ jsx19(
     "p",
     {
       ref,
@@ -1884,7 +2554,7 @@ var CanvasElement = ({ element, index }) => {
   const dispatch = useDispatch4();
   const selectedId = useSelector3((state) => state.editor.selectedElementId);
   const isSelected = selectedId === element.id;
-  const [isEditing, setIsEditing] = useState5(false);
+  const [isEditing, setIsEditing] = useState9(false);
   const ref = useRef2(null);
   const [{ handlerId }, drop] = useDrop2({
     accept: "CANVAS_ELEMENT",
@@ -1933,7 +2603,7 @@ var CanvasElement = ({ element, index }) => {
     var _a, _b;
     switch (element.type) {
       case "text":
-        return /* @__PURE__ */ jsx15(
+        return /* @__PURE__ */ jsx19(
           EditableText,
           {
             initialText: element.content.text || "",
@@ -1947,40 +2617,40 @@ var CanvasElement = ({ element, index }) => {
           }
         );
       case "button":
-        return /* @__PURE__ */ jsx15("a", { href: element.content.url, style: { display: "block", textDecoration: "none", color: "inherit" }, children: element.content.label });
+        return /* @__PURE__ */ jsx19("a", { href: element.content.url, style: { display: "block", textDecoration: "none", color: "inherit" }, children: element.content.label });
       case "image":
-        return /* @__PURE__ */ jsx15("img", { src: element.content.url, alt: element.content.alt, style: { maxWidth: "100%", display: "block" } });
+        return /* @__PURE__ */ jsx19("img", { src: element.content.url, alt: element.content.alt, style: { maxWidth: "100%", display: "block" } });
       case "divider":
-        return /* @__PURE__ */ jsx15("hr", { style: {
+        return /* @__PURE__ */ jsx19("hr", { style: {
           borderTopWidth: element.style.borderTopWidth || "1px",
           borderTopColor: element.style.borderTopColor || "#eeeeee",
           borderTopStyle: element.style.borderTopStyle || "solid"
         } });
       case "spacer":
-        return /* @__PURE__ */ jsx15("div", { style: { height: element.style.height || "32px" } });
+        return /* @__PURE__ */ jsx19("div", { style: { height: element.style.height || "32px" } });
       case "social":
-        return /* @__PURE__ */ jsxs9("div", { className: "flex gap-2 justify-center", children: [
+        return /* @__PURE__ */ jsxs13("div", { className: "flex gap-2 justify-center", children: [
           (_a = element.content.socialLinks) == null ? void 0 : _a.map((link, i) => {
             const iconSize = 24;
             const color = element.style.color || "#374151";
             switch (link.network) {
               case "facebook":
-                return /* @__PURE__ */ jsx15(Facebook, { size: iconSize, color }, i);
+                return /* @__PURE__ */ jsx19(Facebook, { size: iconSize, color }, i);
               case "twitter":
-                return /* @__PURE__ */ jsx15(Twitter, { size: iconSize, color }, i);
+                return /* @__PURE__ */ jsx19(Twitter, { size: iconSize, color }, i);
               case "instagram":
-                return /* @__PURE__ */ jsx15(Instagram, { size: iconSize, color }, i);
+                return /* @__PURE__ */ jsx19(Instagram, { size: iconSize, color }, i);
               case "linkedin":
-                return /* @__PURE__ */ jsx15(Linkedin, { size: iconSize, color }, i);
+                return /* @__PURE__ */ jsx19(Linkedin, { size: iconSize, color }, i);
               default:
-                return /* @__PURE__ */ jsx15(Share22, { size: iconSize, color }, i);
+                return /* @__PURE__ */ jsx19(Share22, { size: iconSize, color }, i);
             }
           }),
-          (!element.content.socialLinks || element.content.socialLinks.length === 0) && /* @__PURE__ */ jsx15("span", { className: "text-slate-400 italic text-sm", children: "No social links" })
+          (!element.content.socialLinks || element.content.socialLinks.length === 0) && /* @__PURE__ */ jsx19("span", { className: "text-slate-400 italic text-sm", children: "No social links" })
         ] });
       case "product":
-        return /* @__PURE__ */ jsxs9("div", { className: "flex flex-col items-center", children: [
-          /* @__PURE__ */ jsx15(
+        return /* @__PURE__ */ jsxs13("div", { className: "flex flex-col items-center", children: [
+          /* @__PURE__ */ jsx19(
             "img",
             {
               src: element.content.imageUrl,
@@ -1993,12 +2663,12 @@ var CanvasElement = ({ element, index }) => {
               }
             }
           ),
-          /* @__PURE__ */ jsx15("h3", { style: { margin: "0 0 8px 0", fontSize: "18px", fontWeight: "bold" }, children: element.content.text }),
-          /* @__PURE__ */ jsxs9("p", { style: { margin: "0 0 16px 0", fontSize: "16px", color: "#666" }, children: [
+          /* @__PURE__ */ jsx19("h3", { style: { margin: "0 0 8px 0", fontSize: "18px", fontWeight: "bold" }, children: element.content.text }),
+          /* @__PURE__ */ jsxs13("p", { style: { margin: "0 0 16px 0", fontSize: "16px", color: "#666" }, children: [
             element.content.currency,
             element.content.price
           ] }),
-          /* @__PURE__ */ jsx15("span", { style: {
+          /* @__PURE__ */ jsx19("span", { style: {
             display: "inline-block",
             backgroundColor: "#007bff",
             color: "#ffffff",
@@ -2009,8 +2679,8 @@ var CanvasElement = ({ element, index }) => {
           }, children: element.content.label })
         ] });
       case "video":
-        return /* @__PURE__ */ jsxs9("div", { className: "relative group/video cursor-pointer", children: [
-          /* @__PURE__ */ jsx15(
+        return /* @__PURE__ */ jsxs13("div", { className: "relative group/video cursor-pointer", children: [
+          /* @__PURE__ */ jsx19(
             "img",
             {
               src: element.content.thumbnailUrl,
@@ -2018,7 +2688,7 @@ var CanvasElement = ({ element, index }) => {
               style: { width: "100%", display: "block", height: "auto" }
             }
           ),
-          /* @__PURE__ */ jsx15("div", { className: "absolute inset-0 flex items-center justify-center bg-black/20 group-hover/video:bg-black/30 transition-colors", children: /* @__PURE__ */ jsx15("div", { className: "bg-white/90 rounded-full p-4 shadow-lg transform transition-transform group-hover/video:scale-110", children: /* @__PURE__ */ jsx15("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", className: "text-black", children: /* @__PURE__ */ jsx15("path", { d: "M8 5v14l11-7z" }) }) }) })
+          /* @__PURE__ */ jsx19("div", { className: "absolute inset-0 flex items-center justify-center bg-black/20 group-hover/video:bg-black/30 transition-colors", children: /* @__PURE__ */ jsx19("div", { className: "bg-white/90 rounded-full p-4 shadow-lg transform transition-transform group-hover/video:scale-110", children: /* @__PURE__ */ jsx19("svg", { width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor", className: "text-black", children: /* @__PURE__ */ jsx19("path", { d: "M8 5v14l11-7z" }) }) }) })
         ] });
       case "countdown":
         const endTime = new Date(element.content.endTime || Date.now()).getTime();
@@ -2028,21 +2698,21 @@ var CanvasElement = ({ element, index }) => {
         const hours = Math.floor(diff % (1e3 * 60 * 60 * 24) / (1e3 * 60 * 60));
         const minutes = Math.floor(diff % (1e3 * 60 * 60) / (1e3 * 60));
         const seconds = Math.floor(diff % (1e3 * 60) / 1e3);
-        return /* @__PURE__ */ jsx15("div", { className: "flex justify-center gap-4 text-center", children: [
+        return /* @__PURE__ */ jsx19("div", { className: "flex justify-center gap-4 text-center", children: [
           { val: days, label: "Days" },
           { val: hours, label: "Hours" },
           { val: minutes, label: "Mins" },
           { val: seconds, label: "Secs" }
-        ].map((item, i) => /* @__PURE__ */ jsxs9("div", { className: "flex flex-col min-w-[60px] p-2 rounded bg-black/10", children: [
-          /* @__PURE__ */ jsx15("span", { className: "text-2xl font-bold", children: String(item.val).padStart(2, "0") }),
-          /* @__PURE__ */ jsx15("span", { className: "text-xs uppercase opacity-70", children: item.label })
+        ].map((item, i) => /* @__PURE__ */ jsxs13("div", { className: "flex flex-col min-w-[60px] p-2 rounded bg-black/10", children: [
+          /* @__PURE__ */ jsx19("span", { className: "text-2xl font-bold", children: String(item.val).padStart(2, "0") }),
+          /* @__PURE__ */ jsx19("span", { className: "text-xs uppercase opacity-70", children: item.label })
         ] }, i)) });
       case "html":
-        return /* @__PURE__ */ jsx15("div", { dangerouslySetInnerHTML: { __html: element.content.html || "" } });
+        return /* @__PURE__ */ jsx19("div", { dangerouslySetInnerHTML: { __html: element.content.html || "" } });
       case "columns":
       case "columns-3":
       case "section":
-        return /* @__PURE__ */ jsx15("div", { className: "flex w-full h-full", style: { gap: "0" }, children: (_b = element.content.columns) == null ? void 0 : _b.map((col, i) => /* @__PURE__ */ jsx15(
+        return /* @__PURE__ */ jsx19("div", { className: "flex w-full h-full", style: { gap: "0" }, children: (_b = element.content.columns) == null ? void 0 : _b.map((col, i) => /* @__PURE__ */ jsx19(
           ColumnDropZone,
           {
             parentId: element.id,
@@ -2051,13 +2721,13 @@ var CanvasElement = ({ element, index }) => {
           },
           col.id
         )) });
-        return /* @__PURE__ */ jsx15("div", { children: "Unknown Element" });
+        return /* @__PURE__ */ jsx19("div", { children: "Unknown Element" });
     }
   };
   const canvasSettings = useSelector3((state) => state.editor.canvasSettings);
   const isMobile = canvasSettings.width <= 480;
   const finalStyle = isMobile && element.style.mobile ? __spreadValues(__spreadValues({}, element.style), element.style.mobile) : element.style;
-  return /* @__PURE__ */ jsxs9(
+  return /* @__PURE__ */ jsxs13(
     "div",
     {
       ref,
@@ -2073,12 +2743,12 @@ var CanvasElement = ({ element, index }) => {
         opacity: isDragging ? 0.3 : 1
       }, finalStyle),
       children: [
-        isSelected && /* @__PURE__ */ jsx15(
+        isSelected && /* @__PURE__ */ jsx19(
           "div",
           {
             className: "absolute -top-3 -right-3 bg-white shadow-md rounded-full p-1 cursor-pointer z-50 group-hover:block",
             onClick: handleDelete,
-            children: /* @__PURE__ */ jsx15(Trash2, { size: 14, className: "text-red-500" })
+            children: /* @__PURE__ */ jsx19(Trash2, { size: 14, className: "text-red-500" })
           }
         ),
         renderContent()
@@ -2088,7 +2758,7 @@ var CanvasElement = ({ element, index }) => {
 };
 
 // src/components/editor/Canvas.tsx
-import { jsx as jsx16, jsxs as jsxs10 } from "react/jsx-runtime";
+import { jsx as jsx20, jsxs as jsxs14 } from "react/jsx-runtime";
 var Canvas = () => {
   const dispatch = useDispatch5();
   const { elements, canvasSettings } = useSelector4((state) => state.editor);
@@ -2108,18 +2778,18 @@ var Canvas = () => {
   const handleBackgroundClick = () => {
     dispatch(selectElement(null));
   };
-  return /* @__PURE__ */ jsx16(
+  return /* @__PURE__ */ jsx20(
     "main",
     {
       className: "flex-1 bg-slate-100/50 p-10 overflow-y-auto flex justify-center relative z-0",
       onClick: handleBackgroundClick,
-      children: /* @__PURE__ */ jsxs10("div", { className: "flex flex-col items-center w-full max-w-[1200px] py-12", children: [
-        /* @__PURE__ */ jsxs10("div", { className: "text-[10px] text-slate-400 mb-3 font-medium uppercase tracking-widest bg-white/50 px-3 py-1 rounded-full border border-slate-200/50 backdrop-blur-sm", children: [
+      children: /* @__PURE__ */ jsxs14("div", { className: "flex flex-col items-center w-full max-w-[1200px] py-12", children: [
+        /* @__PURE__ */ jsxs14("div", { className: "text-[10px] text-slate-400 mb-3 font-medium uppercase tracking-widest bg-white/50 px-3 py-1 rounded-full border border-slate-200/50 backdrop-blur-sm", children: [
           "Width: ",
           canvasSettings.width,
           "px"
         ] }),
-        /* @__PURE__ */ jsx16(
+        /* @__PURE__ */ jsx20(
           "div",
           {
             ref: drop,
@@ -2136,17 +2806,17 @@ var Canvas = () => {
               maxWidth: "100%"
             },
             onClick: (e) => e.stopPropagation(),
-            children: elements.length === 0 ? /* @__PURE__ */ jsx16("div", { className: "absolute inset-0 flex flex-col items-center justify-center pointer-events-none", children: /* @__PURE__ */ jsxs10("div", { className: "border-2 border-dashed border-slate-200 rounded-xl p-12 flex flex-col items-center text-center max-w-sm mx-auto", children: [
-              /* @__PURE__ */ jsx16("div", { className: "w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4", children: /* @__PURE__ */ jsx16("span", { className: "text-3xl text-slate-300", children: "+" }) }),
-              /* @__PURE__ */ jsx16("h3", { className: "text-slate-900 font-medium mb-1", children: "Start Building" }),
-              /* @__PURE__ */ jsx16("p", { className: "text-slate-500 text-sm", children: "Drag and drop elements from the left panel to begin designing your newsletter." })
-            ] }) }) : /* @__PURE__ */ jsxs10("div", { className: "flex flex-col w-full h-full", children: [
-              elements.map((element, index) => /* @__PURE__ */ jsx16(CanvasElement, { element, index }, element.id)),
-              /* @__PURE__ */ jsx16("div", { className: "flex-1 min-h-[50px] transition-colors" })
+            children: elements.length === 0 ? /* @__PURE__ */ jsx20("div", { className: "absolute inset-0 flex flex-col items-center justify-center pointer-events-none", children: /* @__PURE__ */ jsxs14("div", { className: "border-2 border-dashed border-slate-200 rounded-xl p-12 flex flex-col items-center text-center max-w-sm mx-auto", children: [
+              /* @__PURE__ */ jsx20("div", { className: "w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4", children: /* @__PURE__ */ jsx20("span", { className: "text-3xl text-slate-300", children: "+" }) }),
+              /* @__PURE__ */ jsx20("h3", { className: "text-slate-900 font-medium mb-1", children: "Start Building" }),
+              /* @__PURE__ */ jsx20("p", { className: "text-slate-500 text-sm", children: "Drag and drop elements from the left panel to begin designing your newsletter." })
+            ] }) }) : /* @__PURE__ */ jsxs14("div", { className: "flex flex-col w-full h-full", children: [
+              elements.map((element, index) => /* @__PURE__ */ jsx20(CanvasElement, { element, index }, element.id)),
+              /* @__PURE__ */ jsx20("div", { className: "flex-1 min-h-[50px] transition-colors" })
             ] })
           }
         ),
-        /* @__PURE__ */ jsx16("div", { className: "h-20" }),
+        /* @__PURE__ */ jsx20("div", { className: "h-20" }),
         " "
       ] })
     }
@@ -2154,19 +2824,565 @@ var Canvas = () => {
 };
 
 // src/components/EmailEditor.tsx
-import { jsx as jsx17, jsxs as jsxs11 } from "react/jsx-runtime";
-var EmailEditor = ({ onSave, onLoad, onUploadImage, onFetchImages, onSendTestEmail, mergeTags }) => {
-  return /* @__PURE__ */ jsx17(Provider, { store, children: /* @__PURE__ */ jsx17(DndProvider, { backend: HTML5Backend, children: /* @__PURE__ */ jsxs11("div", { className: "flex flex-col h-full w-full overflow-hidden bg-background text-foreground", children: [
-    /* @__PURE__ */ jsx17(Header, { onSave, onLoad, onSendTestEmail }),
-    /* @__PURE__ */ jsxs11("div", { className: "flex flex-1 overflow-hidden relative", children: [
-      /* @__PURE__ */ jsx17(ToolsPanel, {}),
-      /* @__PURE__ */ jsx17(Canvas, {}),
-      /* @__PURE__ */ jsx17(PropertiesPanel, { onUploadImage, onFetchImages, mergeTags })
+import { jsx as jsx21, jsxs as jsxs15 } from "react/jsx-runtime";
+var EmailEditor = ({ onSave, onLoad, onUploadImage, onFetchImages, onSendTestEmail, mergeTags, aiFeatures }) => {
+  return /* @__PURE__ */ jsx21(Provider, { store, children: /* @__PURE__ */ jsx21(DndProvider, { backend: HTML5Backend, children: /* @__PURE__ */ jsxs15("div", { className: "flex flex-col h-full w-full overflow-hidden bg-background text-foreground", children: [
+    /* @__PURE__ */ jsx21(Header, { onSave, onLoad, onSendTestEmail, aiFeatures }),
+    /* @__PURE__ */ jsxs15("div", { className: "flex flex-1 overflow-hidden relative", children: [
+      /* @__PURE__ */ jsx21(ToolsPanel, {}),
+      /* @__PURE__ */ jsx21(Canvas, {}),
+      /* @__PURE__ */ jsx21(PropertiesPanel, { onUploadImage, onFetchImages, mergeTags, aiFeatures })
     ] })
   ] }) }) });
 };
+
+// src/components/SignupFormBuilder.tsx
+import { Provider as Provider2 } from "react-redux";
+import { DndProvider as DndProvider2 } from "react-dnd";
+import { HTML5Backend as HTML5Backend2 } from "react-dnd-html5-backend";
+
+// src/components/form-builder/FormLayout.tsx
+import { useState as useState11 } from "react";
+import { useDispatch as useDispatch11 } from "react-redux";
+
+// src/components/form-builder/StepNavigator.tsx
+import React17 from "react";
+import { useSelector as useSelector5, useDispatch as useDispatch6 } from "react-redux";
+import { ChevronRight, Plus, X as X8 } from "lucide-react";
+import { jsx as jsx22, jsxs as jsxs16 } from "react/jsx-runtime";
+var StepNavigator = () => {
+  const dispatch = useDispatch6();
+  const { steps, currentStepId } = useSelector5((state) => state.formEditor);
+  const handleAddStep = () => {
+    dispatch(addStep({ name: "New Step" }));
+  };
+  return /* @__PURE__ */ jsxs16("div", { className: "flex items-center space-x-1", children: [
+    steps.map((step, index) => /* @__PURE__ */ jsxs16(React17.Fragment, { children: [
+      /* @__PURE__ */ jsxs16(
+        "div",
+        {
+          className: cn(
+            "group relative flex items-center px-3 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer border",
+            currentStepId === step.id ? "bg-blue-50 border-blue-200 text-blue-700" : "bg-white border-transparent hover:bg-slate-100 text-slate-600"
+          ),
+          onClick: () => dispatch(setActiveStep(step.id)),
+          children: [
+            step.name,
+            steps.length > 1 && /* @__PURE__ */ jsx22(
+              "button",
+              {
+                className: "ml-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-opacity",
+                onClick: (e) => {
+                  e.stopPropagation();
+                  dispatch(removeStep(step.id));
+                },
+                children: /* @__PURE__ */ jsx22(X8, { size: 12 })
+              }
+            )
+          ]
+        }
+      ),
+      index < steps.length - 1 && /* @__PURE__ */ jsx22(ChevronRight, { size: 14, className: "text-slate-300" })
+    ] }, step.id)),
+    /* @__PURE__ */ jsx22(Button, { variant: "ghost", size: "sm", className: "h-7 px-2 text-slate-400 hover:text-blue-600", onClick: handleAddStep, children: /* @__PURE__ */ jsx22(Plus, { size: 14 }) })
+  ] });
+};
+var StepNavigator_default = StepNavigator;
+
+// src/components/form-builder/FormCanvas.tsx
+import { useSelector as useSelector7, useDispatch as useDispatch8 } from "react-redux";
+import { useDrop as useDrop5 } from "react-dnd";
+
+// src/components/form-builder/FormCanvasElement.tsx
+import React18, { useState as useState10, useRef as useRef3 } from "react";
+import { useDrag as useDrag3, useDrop as useDrop4 } from "react-dnd";
+import { useDispatch as useDispatch7, useSelector as useSelector6 } from "react-redux";
+import { Trash2 as Trash22 } from "lucide-react";
+import { jsx as jsx23, jsxs as jsxs17 } from "react/jsx-runtime";
+var FormCanvasElement = ({ element, index }) => {
+  const dispatch = useDispatch7();
+  const selectedId = useSelector6((state) => state.formEditor.selectedElementId);
+  const isSelected = selectedId === element.id;
+  const [isEditing, setIsEditing] = useState10(false);
+  const ref = useRef3(null);
+  const [{ handlerId }, drop] = useDrop4({
+    accept: "FORM_ELEMENT",
+    collect(monitor) {
+      return {
+        handlerId: monitor.getHandlerId()
+      };
+    },
+    hover(item, monitor) {
+      if (!ref.current) return;
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      if (dragIndex === hoverIndex) return;
+      dispatch(moveElement2({ dragIndex, hoverIndex }));
+      item.index = hoverIndex;
+    }
+  });
+  const [{ isDragging }, drag] = useDrag3({
+    type: "FORM_ELEMENT",
+    item: () => ({ id: element.id, index }),
+    canDrag: () => !isEditing,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging()
+    })
+  });
+  drag(drop(ref));
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (isSelected && element.type === "text") {
+      setIsEditing(true);
+    }
+    dispatch(selectElement2(element.id));
+  };
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    dispatch(removeElement2(element.id));
+  };
+  const renderContent = () => {
+    switch (element.type) {
+      case "text":
+        return /* @__PURE__ */ jsx23("div", { dangerouslySetInnerHTML: { __html: element.content.text || "" } });
+      case "form-input":
+        return /* @__PURE__ */ jsxs17("div", { className: "w-full", children: [
+          /* @__PURE__ */ jsx23("label", { className: "block text-sm font-medium text-gray-700 mb-1 pointer-events-none", children: element.content.label }),
+          /* @__PURE__ */ jsx23(
+            "input",
+            {
+              type: element.content.inputType || "text",
+              placeholder: element.content.placeholder,
+              className: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pointer-events-none",
+              disabled: true
+            }
+          )
+        ] });
+      case "form-submit":
+        return /* @__PURE__ */ jsx23("button", { className: "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded pointer-events-none", children: element.content.label });
+      case "image":
+        return /* @__PURE__ */ jsx23("img", { src: element.content.url, alt: "Element", className: "max-w-full h-auto" });
+      case "button":
+        return /* @__PURE__ */ jsx23("button", { className: "underline text-sm text-gray-600", children: element.content.label });
+      case "spacer":
+        return /* @__PURE__ */ jsx23("div", { style: { height: "32px" } });
+      default:
+        return /* @__PURE__ */ jsxs17("div", { className: "p-2 border border-dashed text-gray-400", children: [
+          "Unknown Element: ",
+          element.type
+        ] });
+    }
+  };
+  return /* @__PURE__ */ jsxs17(
+    "div",
+    {
+      ref,
+      onClick: handleClick,
+      "data-handler-id": handlerId,
+      className: `
+                relative group
+                ${isSelected ? "ring-2 ring-blue-500 z-10" : "hover:ring-1 hover:ring-blue-300"}
+                cursor-pointer transition-all
+            `,
+      style: __spreadValues({
+        opacity: isDragging ? 0.3 : 1
+      }, element.style),
+      children: [
+        isSelected && /* @__PURE__ */ jsx23(
+          "div",
+          {
+            className: "absolute -top-3 -right-3 bg-white shadow-md rounded-full p-1 cursor-pointer z-50 hover:bg-red-50",
+            onClick: handleDelete,
+            children: /* @__PURE__ */ jsx23(Trash22, { size: 14, className: "text-red-500" })
+          }
+        ),
+        renderContent()
+      ]
+    }
+  );
+};
+
+// src/components/form-builder/FormCanvas.tsx
+import { jsx as jsx24 } from "react/jsx-runtime";
+var FormCanvas = ({ viewMode }) => {
+  const dispatch = useDispatch8();
+  const { formSettings, currentStepId, steps, selectedElementId } = useSelector7((state) => state.formEditor);
+  const currentStep = steps.find((s) => s.id === currentStepId);
+  const [{ isOver }, drop] = useDrop5(() => ({
+    accept: "tool",
+    drop: (item, monitor) => {
+      dispatch(addElement2({ type: item.type }));
+      return { name: "FormCanvas" };
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver()
+    })
+  }));
+  const containerStyle = {
+    width: viewMode === "mobile" ? "320px" : `${formSettings.width}px`,
+    backgroundColor: formSettings.backgroundColor,
+    borderRadius: `${formSettings.borderRadius}px`,
+    padding: formSettings.padding,
+    fontFamily: formSettings.fontFamily
+  };
+  if (!currentStep) return /* @__PURE__ */ jsx24("div", { children: "No Step Selected" });
+  return /* @__PURE__ */ jsx24(
+    "div",
+    {
+      ref: drop,
+      className: cn(
+        "relative transition-all duration-300 shadow-xl min-h-[400px]",
+        isOver ? "ring-2 ring-blue-500 ring-offset-2" : ""
+      ),
+      style: containerStyle,
+      onClick: () => dispatch(selectElement2(null)),
+      children: currentStep.elements.length === 0 ? /* @__PURE__ */ jsx24("div", { className: "flex flex-col items-center justify-center py-20 text-slate-400 border-2 border-dashed border-slate-200 rounded-lg", children: /* @__PURE__ */ jsx24("p", { children: "Drag elements here" }) }) : /* @__PURE__ */ jsx24("div", { className: "flex flex-col space-y-4", children: currentStep.elements.map((element, index) => /* @__PURE__ */ jsx24(
+        FormCanvasElement,
+        {
+          element,
+          index
+        },
+        element.id
+      )) })
+    }
+  );
+};
+var FormCanvas_default = FormCanvas;
+
+// src/components/form-builder/panels/BlocksPanel.tsx
+import { useDrag as useDrag4 } from "react-dnd";
+import { Type as Type3, Image as ImageIcon4, MousePointerClick as MousePointerClick2, Box, FormInput } from "lucide-react";
+import { jsx as jsx25, jsxs as jsxs18 } from "react/jsx-runtime";
+var tools = [
+  { type: "text", label: "Text", icon: Type3 },
+  { type: "image", label: "Image", icon: ImageIcon4 },
+  { type: "spacer", label: "Spacer", icon: Box },
+  { type: "form-input", label: "Input Field", icon: FormInput },
+  // New
+  { type: "form-submit", label: "Submit Button", icon: MousePointerClick2 },
+  // New
+  { type: "button", label: "Button", icon: MousePointerClick2 }
+];
+var BlocksPanel = () => {
+  return /* @__PURE__ */ jsx25("div", { className: "grid grid-cols-2 gap-3", children: tools.map((tool) => /* @__PURE__ */ jsx25(DraggableTool2, { tool }, tool.type)) });
+};
+var DraggableTool2 = ({ tool }) => {
+  const [{ isDragging }, drag] = useDrag4(() => ({
+    type: "tool",
+    item: { type: tool.type },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging()
+    })
+  }));
+  const Icon = tool.icon;
+  return /* @__PURE__ */ jsxs18(
+    "div",
+    {
+      ref: drag,
+      className: `
+                flex flex-col items-center justify-center p-4 
+                bg-slate-50 hover:bg-white border border-slate-200 hover:border-blue-400 hover:shadow-sm
+                rounded-lg cursor-grab active:cursor-grabbing transition-all
+                ${isDragging ? "opacity-50" : "opacity-100"}
+            `,
+      children: [
+        /* @__PURE__ */ jsx25("div", { className: "bg-slate-200 p-2 rounded-md mb-2 text-slate-600", children: /* @__PURE__ */ jsx25(Icon, { size: 20 }) }),
+        /* @__PURE__ */ jsx25("span", { className: "text-xs font-medium text-slate-700", children: tool.label })
+      ]
+    }
+  );
+};
+var BlocksPanel_default = BlocksPanel;
+
+// src/components/form-builder/panels/StylesPanel.tsx
+import { useSelector as useSelector8, useDispatch as useDispatch9 } from "react-redux";
+import { jsx as jsx26, jsxs as jsxs19 } from "react/jsx-runtime";
+var StylesPanel = () => {
+  const dispatch = useDispatch9();
+  const { formSettings } = useSelector8((state) => state.formEditor);
+  const handleChange = (key, value) => {
+    dispatch(updateFormSettings({ [key]: value }));
+  };
+  return /* @__PURE__ */ jsxs19("div", { className: "space-y-6", children: [
+    /* @__PURE__ */ jsxs19("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsx26("h3", { className: "text-sm font-semibold text-slate-900 border-b pb-2", children: "Layout" }),
+      /* @__PURE__ */ jsxs19("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx26(Label, { children: "Form Width (px)" }),
+        /* @__PURE__ */ jsx26(
+          Input,
+          {
+            type: "number",
+            value: formSettings.width,
+            onChange: (e) => handleChange("width", parseInt(e.target.value))
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs19("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx26(Label, { children: "Padding" }),
+        /* @__PURE__ */ jsx26(
+          Input,
+          {
+            value: formSettings.padding,
+            onChange: (e) => handleChange("padding", e.target.value)
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs19("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsx26("h3", { className: "text-sm font-semibold text-slate-900 border-b pb-2", children: "Appearance" }),
+      /* @__PURE__ */ jsxs19("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx26(Label, { children: "Background Color" }),
+        /* @__PURE__ */ jsxs19("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx26(
+            "div",
+            {
+              className: "w-8 h-8 rounded border shadow-sm",
+              style: { backgroundColor: formSettings.backgroundColor }
+            }
+          ),
+          /* @__PURE__ */ jsx26(
+            Input,
+            {
+              value: formSettings.backgroundColor,
+              onChange: (e) => handleChange("backgroundColor", e.target.value)
+            }
+          )
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs19("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx26(Label, { children: "Border Radius (px)" }),
+        /* @__PURE__ */ jsx26(
+          Input,
+          {
+            type: "number",
+            value: formSettings.borderRadius,
+            onChange: (e) => handleChange("borderRadius", parseInt(e.target.value))
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs19("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx26(Label, { children: "Overlay Opacity" }),
+        /* @__PURE__ */ jsx26(
+          Input,
+          {
+            type: "number",
+            step: "0.1",
+            min: "0",
+            max: "1",
+            value: formSettings.overlayOpacity,
+            onChange: (e) => handleChange("overlayOpacity", parseFloat(e.target.value))
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+var StylesPanel_default = StylesPanel;
+
+// src/components/form-builder/panels/TargetingPanel.tsx
+import { useSelector as useSelector9, useDispatch as useDispatch10 } from "react-redux";
+
+// src/components/ui/switch.tsx
+import * as React19 from "react";
+import { jsx as jsx27, jsxs as jsxs20 } from "react/jsx-runtime";
+var Switch = React19.forwardRef((_a, ref) => {
+  var _b = _a, { className, checked, onCheckedChange } = _b, props = __objRest(_b, ["className", "checked", "onCheckedChange"]);
+  return /* @__PURE__ */ jsxs20("label", { className: cn("inline-flex relative items-center cursor-pointer", className), children: [
+    /* @__PURE__ */ jsx27(
+      "input",
+      __spreadValues({
+        type: "checkbox",
+        className: "sr-only peer",
+        ref,
+        checked,
+        onChange: (e) => onCheckedChange == null ? void 0 : onCheckedChange(e.target.checked)
+      }, props)
+    ),
+    /* @__PURE__ */ jsx27("div", { className: "w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" })
+  ] });
+});
+Switch.displayName = "Switch";
+
+// src/components/ui/select.tsx
+import { ChevronDown as ChevronDown2 } from "lucide-react";
+import { Fragment as Fragment3, jsx as jsx28, jsxs as jsxs21 } from "react/jsx-runtime";
+var Select = (_a) => {
+  var _b = _a, { children, value, onValueChange } = _b, props = __objRest(_b, ["children", "value", "onValueChange"]);
+  return /* @__PURE__ */ jsxs21("div", { className: "relative", children: [
+    /* @__PURE__ */ jsx28(
+      "select",
+      __spreadValues({
+        className: "flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none",
+        value,
+        onChange: (e) => onValueChange(e.target.value)
+      }, props)
+    ),
+    /* @__PURE__ */ jsx28(ChevronDown2, { className: "absolute right-3 top-3 h-4 w-4 opacity-50 pointer-events-none" })
+  ] });
+};
+var SelectTrigger = ({ children, className }) => /* @__PURE__ */ jsx28(Fragment3, { children });
+var SelectValue = ({ children }) => /* @__PURE__ */ jsx28(Fragment3, { children });
+var SelectContent = ({ children }) => /* @__PURE__ */ jsx28(Fragment3, { children });
+var SelectItem = ({ value, children }) => /* @__PURE__ */ jsx28("option", { value, children });
+
+// src/components/form-builder/panels/TargetingPanel.tsx
+import { jsx as jsx29, jsxs as jsxs22 } from "react/jsx-runtime";
+var TargetingPanel = () => {
+  const dispatch = useDispatch10();
+  const { behavior } = useSelector9((state) => state.formEditor);
+  const updateTrigger = (key, value) => {
+    dispatch(updateBehavior({
+      triggerConfig: __spreadProps(__spreadValues({}, behavior.triggerConfig), { [key]: value })
+    }));
+  };
+  return /* @__PURE__ */ jsxs22("div", { className: "space-y-6", children: [
+    /* @__PURE__ */ jsxs22("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsx29("h3", { className: "text-sm font-semibold text-slate-900 border-b pb-2", children: "Display Triggers" }),
+      /* @__PURE__ */ jsxs22("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxs22(Label, { className: "flex flex-col", children: [
+          /* @__PURE__ */ jsx29("span", { children: "Exit Intent" }),
+          /* @__PURE__ */ jsx29("span", { className: "text-xs text-slate-500 font-normal", children: "Show when user moves mouse to exit" })
+        ] }),
+        /* @__PURE__ */ jsx29(
+          Switch,
+          {
+            checked: behavior.triggerConfig.exitIntent,
+            onCheckedChange: (checked) => updateTrigger("exitIntent", checked)
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs22("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsx29("h3", { className: "text-sm font-semibold text-slate-900 border-b pb-2", children: "Frequency" }),
+      /* @__PURE__ */ jsxs22("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx29(Label, { children: "Show Form" }),
+        /* @__PURE__ */ jsxs22(
+          Select,
+          {
+            value: behavior.displayFrequency,
+            onValueChange: (val) => dispatch(updateBehavior({ displayFrequency: val })),
+            children: [
+              /* @__PURE__ */ jsx29(SelectTrigger, { children: /* @__PURE__ */ jsx29(SelectValue, {}) }),
+              /* @__PURE__ */ jsxs22(SelectContent, { children: [
+                /* @__PURE__ */ jsx29(SelectItem, { value: "always", children: "Always" }),
+                /* @__PURE__ */ jsx29(SelectItem, { value: "once_per_session", children: "Once per session" }),
+                /* @__PURE__ */ jsx29(SelectItem, { value: "once_per_user", children: "Once per user" })
+              ] })
+            ]
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs22("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsx29("h3", { className: "text-sm font-semibold text-slate-900 border-b pb-2", children: "Devices" }),
+      /* @__PURE__ */ jsxs22("div", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx29(Label, { children: "Target Devices" }),
+        /* @__PURE__ */ jsxs22(
+          Select,
+          {
+            value: behavior.deviceTargeting,
+            onValueChange: (val) => dispatch(updateBehavior({ deviceTargeting: val })),
+            children: [
+              /* @__PURE__ */ jsx29(SelectTrigger, { children: /* @__PURE__ */ jsx29(SelectValue, {}) }),
+              /* @__PURE__ */ jsxs22(SelectContent, { children: [
+                /* @__PURE__ */ jsx29(SelectItem, { value: "all", children: "Desktop & Mobile" }),
+                /* @__PURE__ */ jsx29(SelectItem, { value: "desktop", children: "Desktop Only" }),
+                /* @__PURE__ */ jsx29(SelectItem, { value: "mobile", children: "Mobile Only" })
+              ] })
+            ]
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+var TargetingPanel_default = TargetingPanel;
+
+// src/components/form-builder/FormLayout.tsx
+import { Eye as Eye2, Smartphone as Smartphone3 } from "lucide-react";
+import { jsx as jsx30, jsxs as jsxs23 } from "react/jsx-runtime";
+var FormLayout = () => {
+  const dispatch = useDispatch11();
+  const [activeTab, setActiveTab] = useState11("blocks");
+  const [viewMode, setViewMode] = useState11("desktop");
+  const handleSave = () => {
+    console.log("Saving form...");
+  };
+  return /* @__PURE__ */ jsxs23("div", { className: "flex h-full w-full bg-slate-50 overflow-hidden", children: [
+    /* @__PURE__ */ jsxs23("div", { className: "w-[320px] bg-white border-r border-slate-200 flex flex-col shrink-0", children: [
+      /* @__PURE__ */ jsx30("div", { className: "h-14 border-b border-slate-200 flex items-center px-4 font-semibold text-slate-800", children: "Form Builder" }),
+      /* @__PURE__ */ jsxs23("div", { className: "flex border-b border-slate-200", children: [
+        /* @__PURE__ */ jsx30(
+          "button",
+          {
+            onClick: () => setActiveTab("blocks"),
+            className: cn("flex-1 py-3 text-sm font-medium border-b-2 transition-colors", activeTab === "blocks" ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-800"),
+            children: "Blocks"
+          }
+        ),
+        /* @__PURE__ */ jsx30(
+          "button",
+          {
+            onClick: () => setActiveTab("styles"),
+            className: cn("flex-1 py-3 text-sm font-medium border-b-2 transition-colors", activeTab === "styles" ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-800"),
+            children: "Styles"
+          }
+        ),
+        /* @__PURE__ */ jsx30(
+          "button",
+          {
+            onClick: () => setActiveTab("targeting"),
+            className: cn("flex-1 py-3 text-sm font-medium border-b-2 transition-colors", activeTab === "targeting" ? "border-blue-600 text-blue-600" : "border-transparent text-slate-500 hover:text-slate-800"),
+            children: "Targeting"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs23("div", { className: "flex-1 overflow-y-auto p-4 custom-scrollbar", children: [
+        activeTab === "blocks" && /* @__PURE__ */ jsx30(BlocksPanel_default, {}),
+        activeTab === "styles" && /* @__PURE__ */ jsx30(StylesPanel_default, {}),
+        activeTab === "targeting" && /* @__PURE__ */ jsx30(TargetingPanel_default, {})
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs23("div", { className: "flex-1 flex flex-col relative", children: [
+      /* @__PURE__ */ jsxs23("div", { className: "h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0", children: [
+        /* @__PURE__ */ jsx30(StepNavigator_default, {}),
+        /* @__PURE__ */ jsxs23("div", { className: "flex items-center space-x-2 bg-slate-100 p-1 rounded-lg", children: [
+          /* @__PURE__ */ jsx30(
+            "button",
+            {
+              onClick: () => setViewMode("desktop"),
+              className: cn("p-1.5 rounded-md transition-all", viewMode === "desktop" ? "bg-white shadow text-slate-900" : "text-slate-500 hover:text-slate-900"),
+              children: /* @__PURE__ */ jsx30(Eye2, { size: 18 })
+            }
+          ),
+          /* @__PURE__ */ jsx30(
+            "button",
+            {
+              onClick: () => setViewMode("mobile"),
+              className: cn("p-1.5 rounded-md transition-all", viewMode === "mobile" ? "bg-white shadow text-slate-900" : "text-slate-500 hover:text-slate-900"),
+              children: /* @__PURE__ */ jsx30(Smartphone3, { size: 18 })
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs23("div", { className: "flex items-center space-x-3", children: [
+          /* @__PURE__ */ jsx30(Button, { variant: "outline", size: "sm", onClick: () => console.log("Exit"), children: "Exit" }),
+          /* @__PURE__ */ jsx30(Button, { size: "sm", onClick: handleSave, children: "Publish" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx30("div", { className: "flex-1 overflow-hidden relative bg-slate-100 flex items-center justify-center p-8", children: /* @__PURE__ */ jsx30(FormCanvas_default, { viewMode }) })
+    ] })
+  ] });
+};
+var FormLayout_default = FormLayout;
+
+// src/components/SignupFormBuilder.tsx
+import { jsx as jsx31 } from "react/jsx-runtime";
+var SignupFormBuilder = (props) => {
+  return /* @__PURE__ */ jsx31(Provider2, { store, children: /* @__PURE__ */ jsx31(DndProvider2, { backend: HTML5Backend2, children: /* @__PURE__ */ jsx31("div", { className: "signup-form-builder-container", style: { height: "100vh", display: "flex", flexDirection: "column" }, children: /* @__PURE__ */ jsx31(FormLayout_default, {}) }) }) });
+};
 export {
   EmailEditor,
+  SignupFormBuilder,
   addElement,
   cn,
   generateHtml,
