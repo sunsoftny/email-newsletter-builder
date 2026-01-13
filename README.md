@@ -115,6 +115,45 @@ The builder supports 4 key AI modules:
 
 To enable these, simply providing the `aiFeatures` prop with your async callbacks. The builder handles all the UI/UX (modals, loading states, error handling).
 
+## 📊 Data Structure
+
+The editor persists its state as a JSON object (`EditorState`). You can programmatically generate or manipulate this JSON to create dynamic templates.
+
+### Schema Overview
+
+```typescript
+interface EditorState {
+  canvasSettings: {
+    width: number;           // e.g. 600
+    backgroundColor: string; // e.g. "#ffffff"
+    fontFamily: string;      // e.g. "Open Sans"
+    // ...
+  };
+  elements: EditorElement[]; // Ordered list of content blocks
+}
+```
+
+### Element Structure
+
+Each block in the `elements` array follows this pattern:
+
+```json
+{
+  "id": "unique-uuid-v4",
+  "type": "text", // or 'image', 'button', 'columns', etc.
+  "content": {
+    "text": "<p>Hello World</p>",
+    "url": "https://...",
+    "imageUrl": "..."
+  },
+  "style": {
+    "padding": "20px",
+    "backgroundColor": "transparent",
+    "textAlign": "left"
+  }
+}
+```
+
 ## Exporting HTML
 
 The library includes a utility to generate email-ready HTML from the editor state.
