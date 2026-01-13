@@ -29,13 +29,18 @@ export default function Home() {
     const stored = localStorage.getItem('saved_templates');
     let templates = stored ? JSON.parse(stored) : [];
 
-    // If no templates exist, seed with samples
-    if (templates.length === 0) {
-      templates = SAMPLE_TEMPLATES.map(t => ({
+    // Check if samples exist, if not add them (even if other templates exist)
+    const hasSample = templates.some((t: any) => t.name === 'Welcome Email');
+
+    if (!hasSample) {
+      console.log('Seeding sample templates...');
+      const samples = SAMPLE_TEMPLATES.map(t => ({
         ...t,
         id: crypto.randomUUID(), // New ID for local copy
         updatedAt: new Date().toISOString()
       }));
+      // Add samples to the beginning
+      templates = [...samples, ...templates];
       localStorage.setItem('saved_templates', JSON.stringify(templates));
     }
     return templates;
