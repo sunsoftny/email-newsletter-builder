@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.28] - 2026-01-13
+
+### Added
+- **Visual Editor Toggle**: Property panel now supports switching between a "Visual" text editor (default) and "Code" view for raw HTML.
+- **Premium Sample Templates**: Added "Ultimate Product Launch" and "Summer Lookbook" templates showcasing all available components (Video, Countdown, Product Grid).
+
+### Fixed
+- **Canvas Text Editing**: Resolved cursor jumping and focus issues when editing text elements directly on the canvas.
+- **HTML Rendering**: Text elements now correctly render HTML tags (h1, p, etc.) instead of displaying them as raw text.
+- **Template Deduplication**: Fixed a bug where sample templates were duplicating in LocalStorage on every reload.
+
 ## [1.0.27] - 2026-01-13
 
 ### Added
