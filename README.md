@@ -81,8 +81,39 @@ For integrating with **Django, PHP, or Laravel**, see the [Non-React Integration
   
   // Handle test emails (Resend/SendGrid)
   onSendTestEmail={async (email, html) => await sendTest(email, html)}
+
+  // [NEW] AI Features (Optional)
+  aiFeatures={{
+      onTextConnect: async (mode, context, prompt) => { 
+        // Call your AI text API (OpenAI/Anthropic)
+        return "Generated text..."; 
+      },
+      onImageConnect: async (prompt) => {
+        // Call your image generation API (DALL-E/Midjourney)
+        return "https://image.url";
+      },
+      onLayoutConnect: async (prompt) => {
+        // Call your AI layout generator
+        return editorState;
+      },
+      onAnalyzeConnect: async (data, html) => {
+        // Call your analysis API
+        return { subjectLines: ["Suggesion 1"], spamScore: 0.5 };
+      }
+  }}
 />
 ```
+
+## 🤖 AI Integration
+
+The builder supports 4 key AI modules:
+
+1.  **AI Text Assistant**: Rewrite, fix grammar, or expand text directly in the Properties Panel.
+2.  **AI Image Generation**: Generate images from prompts within any image input.
+3.  **Magic Layout Generator**: Build entire newsletters from a single text description.
+4.  **Smart Subject Line Optimizer**: Analyze content and suggest optimized subject lines.
+
+To enable these, simply providing the `aiFeatures` prop with your async callbacks. The builder handles all the UI/UX (modals, loading states, error handling).
 
 ## Exporting HTML
 

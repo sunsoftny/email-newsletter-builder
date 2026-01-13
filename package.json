@@ -1,6 +1,28 @@
 {
   "name": "email-newsletter-builder",
-  "version": "1.0.22",
+  "version": "1.0.23",
+  "description": "A professional, drag-and-drop email newsletter builder for React and Next.js applications, powered by Redux Toolkit and React DnD.",
+  "keywords": [
+    "react",
+    "nextjs",
+    "email-builder",
+    "newsletter",
+    "drag-and-drop",
+    "wysiwyg",
+    "email-editor",
+    "tailwindcss",
+    "ai"
+  ],
+  "homepage": "https://email-newsletter-builder.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunsoftny/email-newsletter-builder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sunsoftny/email-newsletter-builder/issues"
+  },
+  "license": "MIT",
+  "author": "Sunsoft NY",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",

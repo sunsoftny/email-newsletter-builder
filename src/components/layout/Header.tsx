@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Undo, Redo, Eye, Save, Download, Mail, ChevronDown, FileText, Monitor, Smartphone } from 'lucide-react';
+import { Undo, Redo, Eye, Save, Download, Mail, ChevronDown, FileText, Monitor, Smartphone, Sparkles, Wand2, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -11,14 +11,18 @@ import { generateHtml } from '@/lib/export';
 import { undo, redo, loadState } from '@/store/editorSlice';
 import { PreviewModal } from '@/components/ui/PreviewModal';
 import { TemplateListModal } from '@/components/ui/TemplateListModal';
+import { AiLayoutModal } from '@/components/ui/AiLayoutModal';
+import { SubjectLineModal } from '@/components/ui/SubjectLineModal';
+import { scrapeContent } from '@/lib/content-scraper';
 
 interface HeaderProps {
     onSave?: (data: any) => Promise<void>;
     onLoad?: () => Promise<any[]>; // Return array of templates
     onSendTestEmail?: (email: string, html: string) => Promise<void>;
+    aiFeatures?: import('../../lib/types').AiFeatures;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onSave, onLoad, onSendTestEmail }) => {
+export const Header: React.FC<HeaderProps> = ({ onSave, onLoad, onSendTestEmail, aiFeatures }) => {
     const dispatch = useDispatch();
     const editorState = useSelector((state: RootState) => state.editor);
     const { past, future } = editorState.history;
@@ -73,6 +77,8 @@ export const Header: React.FC<HeaderProps> = ({ onSave, onLoad, onSendTestEmail 
 
     const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
     const [isTemplatesOpen, setIsTemplatesOpen] = React.useState(false);
+    const [isAiLayoutOpen, setIsAiLayoutOpen] = React.useState(false); // [NEW]
+    const [isSubjectLineOpen, setIsSubjectLineOpen] = React.useState(false); // [NEW]
 
     return (
         <>
@@ -143,6 +149,30 @@ export const Header: React.FC<HeaderProps> = ({ onSave, onLoad, onSendTestEmail 
                         Preview
                     </Button>
 
+                    {aiFeatures?.onLayoutConnect && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="hidden sm:flex gap-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                            onClick={() => setIsAiLayoutOpen(true)}
+                        >
+                            <Sparkles size={16} />
+                            Magic Build
+                        </Button>
+                    )}
+
+                    {aiFeatures?.onAnalyzeConnect && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="hidden sm:flex gap-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                            onClick={() => setIsSubjectLineOpen(true)}
+                        >
+                            <Lightbulb size={16} />
+                            Analyze
+                        </Button>
+                    )}
+
                     <Button variant="outline" size="sm" className="hidden sm:flex gap-2" onClick={handleSave}>
                         <Save size={16} />
                         Save
@@ -154,6 +184,35 @@ export const Header: React.FC<HeaderProps> = ({ onSave, onLoad, onSendTestEmail 
                     </Button>
                 </div>
             </header>
+
+            {aiFeatures?.onLayoutConnect && (
+                <AiLayoutModal
+                    isOpen={isAiLayoutOpen}
+                    onClose={() => setIsAiLayoutOpen(false)}
+                    onSuccess={(newState: import('../../lib/types').EditorState) => {
+                        dispatch(loadState(newState));
+                        setIsAiLayoutOpen(false);
+                    }}
+                    onGenerate={aiFeatures.onLayoutConnect}
+                />
+            )}
+
+            {aiFeatures?.onAnalyzeConnect && (
+                <SubjectLineModal
+                    isOpen={isSubjectLineOpen}
+                    onClose={() => setIsSubjectLineOpen(false)}
+                    onAnalyze={async () => {
+                        // We need to implement the scraper call here
+                        const { plainText } = scrapeContent(editorState);
+                        // We pass the scraped text as "fullHtml" or context for now, or update interface
+                        // The interface says: onAnalyzeConnect?: (fullJson: any, fullHtml: string)
+                        // Let's pass the JSON and the scraped Plain Text as the second arg for now since HTML generation is heavy?
+                        // Actually generateHtml is fast enough usually.
+                        const html = generateHtml(editorState);
+                        return aiFeatures.onAnalyzeConnect!(editorState, html);
+                    }}
+                />
+            )}
 
             <PreviewModal
                 isOpen={isPreviewOpen}

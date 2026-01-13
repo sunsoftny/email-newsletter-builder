@@ -18,18 +18,19 @@ export interface EmailEditorProps {
     onFetchImages?: () => Promise<string[]>;
     onSendTestEmail?: (email: string, html: string) => Promise<void>;
     mergeTags?: { label: string; value: string }[];
+    aiFeatures?: import('../lib/types').AiFeatures;
 }
 
-export const EmailEditor: React.FC<EmailEditorProps> = ({ onSave, onLoad, onUploadImage, onFetchImages, onSendTestEmail, mergeTags }) => {
+export const EmailEditor: React.FC<EmailEditorProps> = ({ onSave, onLoad, onUploadImage, onFetchImages, onSendTestEmail, mergeTags, aiFeatures }) => {
     return (
         <Provider store={store}>
             <DndProvider backend={HTML5Backend}>
                 <div className="flex flex-col h-full w-full overflow-hidden bg-background text-foreground">
-                    <Header onSave={onSave} onLoad={onLoad} onSendTestEmail={onSendTestEmail} />
+                    <Header onSave={onSave} onLoad={onLoad} onSendTestEmail={onSendTestEmail} aiFeatures={aiFeatures} />
                     <div className="flex flex-1 overflow-hidden relative">
                         <ToolsPanel />
                         <Canvas />
-                        <PropertiesPanel onUploadImage={onUploadImage} onFetchImages={onFetchImages} mergeTags={mergeTags} />
+                        <PropertiesPanel onUploadImage={onUploadImage} onFetchImages={onFetchImages} mergeTags={mergeTags} aiFeatures={aiFeatures} />
                     </div>
                 </div>
             </DndProvider>

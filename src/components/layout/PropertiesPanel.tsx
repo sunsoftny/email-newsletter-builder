@@ -4,7 +4,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { updateElement, updateCanvasSettings } from '@/store/editorSlice';
-import { Sliders, Type, Palette, Layout, Link as LinkIcon, Image as ImageIcon, AlignLeft, AlignCenter, AlignRight, AlignJustify, Upload, Loader2 } from 'lucide-react';
+import { Sliders, Type, Palette, Layout, Link as LinkIcon, Image as ImageIcon, AlignLeft, AlignCenter, AlignRight, AlignJustify, Upload, Loader2, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -12,9 +12,17 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { SpacingControl } from './SpacingControl';
 import { ImageGalleryModal } from '@/components/ui/ImageGalleryModal';
+import { AiTextModal } from '@/components/ui/AiTextModal'; // [NEW]
+import { AiImageModal } from '@/components/ui/AiImageModal'; // [NEW]
 
 // Helper for Image Inputs
-const ImageInput = ({ label, value, onChange, onPickImage }: { label: string, value: string, onChange: (val: string) => void, onPickImage?: () => void }) => {
+const ImageInput = ({ label, value, onChange, onPickImage, onGenerateImage }: {
+    label: string,
+    value: string,
+    onChange: (val: string) => void,
+    onPickImage?: () => void,
+    onGenerateImage?: () => void
+}) => {
     return (
         <div className="grid gap-2">
             <Label>{label}</Label>
@@ -25,6 +33,17 @@ const ImageInput = ({ label, value, onChange, onPickImage }: { label: string, va
                     placeholder="https://..."
                     className="flex-1"
                 />
+                {onGenerateImage && (
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onGenerateImage}
+                        title="Generate with AI"
+                        className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                    >
+                        <Sparkles size={16} />
+                    </Button>
+                )}
                 {onPickImage && (
                     <Button
                         variant="secondary"
@@ -44,13 +63,16 @@ interface PropertiesPanelProps {
     onUploadImage?: (file: File) => Promise<string>;
     onFetchImages?: () => Promise<string[]>;
     mergeTags?: { label: string; value: string }[];
+    aiFeatures?: import('../../lib/types').AiFeatures;
 }
 
-export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage, onFetchImages, mergeTags }) => {
+export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage, onFetchImages, mergeTags, aiFeatures }) => {
     const dispatch = useDispatch();
     const { elements, selectedElementId, canvasSettings } = useSelector((state: RootState) => state.editor);
 
     const [galleryCallback, setGalleryCallback] = React.useState<((url: string) => void) | null>(null);
+    const [aiTextCallback, setAiTextCallback] = React.useState<((text: string) => void) | null>(null); // [NEW]
+    const [aiImageCallback, setAiImageCallback] = React.useState<((url: string) => void) | null>(null); // [NEW]
 
     const openGallery = (onChange: (url: string) => void) => {
         setGalleryCallback(() => onChange);
@@ -267,7 +289,20 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage,
                 {selectedElement.type === 'text' && (
                     <div className="grid gap-4">
                         <div className="grid gap-2">
-                            <Label>Text Content</Label>
+                            <div className="flex justify-between items-center">
+                                <Label>Text Content</Label>
+                                {aiFeatures?.onTextConnect && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 px-2 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                                        onClick={() => setAiTextCallback(() => (newText: string) => handleContentChange('text', newText))}
+                                    >
+                                        <Sparkles size={12} className="mr-1" />
+                                        AI Magic
+                                    </Button>
+                                )}
+                            </div>
                             <textarea
                                 value={selectedElement.content.text || ''}
                                 onChange={(e) => handleContentChange('text', e.target.value)}
@@ -378,6 +413,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage,
                             value={selectedElement.content.imageUrl || ''}
                             onChange={(val) => handleContentChange('imageUrl', val)}
                             onPickImage={() => openGallery((val) => handleContentChange('imageUrl', val))}
+                            onGenerateImage={aiFeatures?.onImageConnect ? () => setAiImageCallback(() => (url: string) => handleContentChange('imageUrl', url)) : undefined}
                         />
                         <div className="grid gap-2">
                             <Label>Button Label</Label>
@@ -403,6 +439,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage,
                             value={selectedElement.content.url || ''}
                             onChange={(val) => handleContentChange('url', val)}
                             onPickImage={() => openGallery((val) => handleContentChange('url', val))}
+                            onGenerateImage={aiFeatures?.onImageConnect ? () => setAiImageCallback(() => (url: string) => handleContentChange('url', url)) : undefined}
                         />
 
                         <div className="rounded-lg border bg-muted/20 p-4 flex items-center justify-center min-h-[120px]">
@@ -620,6 +657,25 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({ onUploadImage,
                 onUpload={onUploadImage}
                 fetchImages={onFetchImages}
             />
+
+            {aiFeatures?.onTextConnect && (
+                <AiTextModal
+                    isOpen={!!aiTextCallback}
+                    onClose={() => setAiTextCallback(null)}
+                    onSuccess={(text) => { if (aiTextCallback) aiTextCallback(text); }}
+                    currentText={selectedElement?.content.text || ''}
+                    onGenerate={aiFeatures.onTextConnect}
+                />
+            )}
+
+            {aiFeatures?.onImageConnect && (
+                <AiImageModal
+                    isOpen={!!aiImageCallback}
+                    onClose={() => setAiImageCallback(null)}
+                    onSuccess={(url) => { if (aiImageCallback) aiImageCallback(url); }}
+                    onGenerate={aiFeatures.onImageConnect}
+                />
+            )}
         </aside>
     );
 };

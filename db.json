@@ -301,6 +301,3828 @@
           "future": []
         }
       }
+    },
+    {
+      "id": "7f41154f-3067-459a-9443-f19df628ec8b",
+      "name": "My Newsletter",
+      "createdAt": "2026-01-13T04:56:37.161Z",
+      "updatedAt": "2026-01-13T04:56:37.161Z",
+      "data": {
+        "elements": [
+          {
+            "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+            "type": "text",
+            "content": {
+              "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you ? "
+            },
+            "style": {
+              "padding": "10px",
+              "margin": "0px",
+              "mobile": {}
+            }
+          }
+        ],
+        "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+        "canvasSettings": {
+          "width": 600,
+          "backgroundColor": "#ffffff",
+          "fontFamily": "'Open Sans', sans-serif",
+          "textColor": "#000000",
+          "linkColor": "#007bff",
+          "lineHeight": "1.5"
+        },
+        "history": {
+          "past": [
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Edit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": null,
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HeEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HelEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HellEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HelloEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello Edit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello W"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello We"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello W"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name }}"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name }"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_nam"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_na"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_n"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ firs"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ fir"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ fi"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ f"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }}"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\n"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\n\n"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nH"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHo"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow a"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow ar"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are y"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are yo"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ?"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? H"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? Ho"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How c"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How ca"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can w"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we a"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we as"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we ass"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assi"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assis"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist y"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist yo"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you ?"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you ? "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            }
+          ],
+          "future": []
+        }
+      }
+    },
+    {
+      "id": "b0a6a5d0-d30a-41a1-bd55-192f7f1d9ba8",
+      "name": "My Newsletter",
+      "createdAt": "2026-01-13T04:56:49.057Z",
+      "updatedAt": "2026-01-13T04:56:49.057Z",
+      "data": {
+        "elements": [
+          {
+            "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+            "type": "text",
+            "content": {
+              "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you ? "
+            },
+            "style": {
+              "padding": "10px",
+              "margin": "0px",
+              "mobile": {}
+            }
+          }
+        ],
+        "selectedElementId": null,
+        "canvasSettings": {
+          "width": 600,
+          "backgroundColor": "#ffffff",
+          "fontFamily": "'Open Sans', sans-serif",
+          "textColor": "#000000",
+          "linkColor": "#007bff",
+          "lineHeight": "1.5"
+        },
+        "history": {
+          "past": [
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Edit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": null,
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HeEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HelEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HellEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "HelloEdit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello Edit this text"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello W"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello We"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello W"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name }}"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name }"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_name"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_nam"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_na"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_n"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first_"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ first"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ firs"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ fir"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ fi"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ f"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{ "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }}"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\n"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\n\n"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nH"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHo"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow a"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow ar"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are y"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are yo"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ?"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? H"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? Ho"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How c"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How ca"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can w"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we a"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we as"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we ass"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assi"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assis"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist y"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist yo"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you ?"
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            },
+            {
+              "elements": [
+                {
+                  "id": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+                  "type": "text",
+                  "content": {
+                    "text": "Hello {{ first_name }},\n\nHow are you ? How can we assist you ? "
+                  },
+                  "style": {
+                    "padding": "10px",
+                    "margin": "0px",
+                    "mobile": {}
+                  }
+                }
+              ],
+              "selectedElementId": "86e0668b-5c88-4f5f-a5b2-be070decd3f4",
+              "canvasSettings": {
+                "width": 600,
+                "backgroundColor": "#ffffff",
+                "fontFamily": "'Open Sans', sans-serif",
+                "textColor": "#000000",
+                "linkColor": "#007bff",
+                "lineHeight": "1.5"
+              }
+            }
+          ],
+          "future": []
+        }
+      }
     }
   ]
 }

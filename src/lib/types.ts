@@ -67,6 +67,38 @@ export interface CanvasSettings {
     lineHeight?: string;
 }
 
+// ... existing types
+
+export interface AiFeatures {
+    /**
+     * Rewrite or generate text based on a prompt and context.
+     * @param mode - The context/goal (e.g., 'rewrite', 'shorten', 'professional')
+     * @param currentText - The existing text
+     * @param prompt - Optional custom prompt from user
+     */
+    onTextConnect?: (mode: 'rewrite' | 'fix' | 'shorten' | 'expand' | 'tone', currentText: string, prompt?: string) => Promise<string>;
+
+    /**
+     * Generate an image from a prompt.
+     * @returns The URL of the generated (and uploaded) image.
+     */
+    onImageConnect?: (prompt: string) => Promise<string>;
+
+    /**
+     * Generate a complete newsletter layout from a description.
+     * @returns A partial EditorState to replace the canvas.
+     */
+    onLayoutConnect?: (prompt: string) => Promise<EditorState>;
+
+    /**
+ * Analyze content and return suggestions.
+ */
+    onAnalyzeConnect?: (fullJson: any, fullHtml: string) => Promise<{
+        subjectLines: string[];
+        spamScore?: number;
+    }>;
+}
+
 export interface EditorState {
     elements: EditorElement[];
     selectedElementId: string | null;
