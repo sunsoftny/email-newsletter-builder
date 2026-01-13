@@ -29,8 +29,29 @@ export default function Home() {
     const stored = localStorage.getItem('saved_templates');
     let templates = stored ? JSON.parse(stored) : [];
 
-    // Check if samples exist, if not add them (even if other templates exist)
-    const hasSample = templates.some((t: any) => t.name === 'Welcome Email');
+    // 1. Clean up potential duplicates of our samples (keep the latest one)
+    // This fixes the issue where previous versions might have spammed LocalStorage
+    const sampleNames = new Set(SAMPLE_TEMPLATES.map(s => s.name));
+    const uniqueTemplates: any[] = [];
+    const seenNames = new Set();
+
+    // Sort by date new to old to keep latest
+    templates.sort((a: any, b: any) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+    for (const t of templates) {
+      if (sampleNames.has(t.name)) {
+        if (!seenNames.has(t.name)) {
+          uniqueTemplates.push(t);
+          seenNames.add(t.name);
+        }
+      } else {
+        uniqueTemplates.push(t);
+      }
+    }
+    templates = uniqueTemplates;
+
+    // 2. Check if we have our samples, if not add them
+    const hasSample = templates.some((t: any) => sampleNames.has(t.name));
 
     if (!hasSample) {
       console.log('Seeding sample templates...');
@@ -39,10 +60,11 @@ export default function Home() {
         id: crypto.randomUUID(), // New ID for local copy
         updatedAt: new Date().toISOString()
       }));
-      // Add samples to the beginning
       templates = [...samples, ...templates];
-      localStorage.setItem('saved_templates', JSON.stringify(templates));
     }
+
+    // Update storage with cleaned list
+    localStorage.setItem('saved_templates', JSON.stringify(templates));
     return templates;
   };
 
